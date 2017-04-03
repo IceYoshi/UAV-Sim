@@ -8,10 +8,7 @@ class FlightZone {
 
   draw() {
     push();
-    noFill();
-    stroke(0,0,0,100)
     box(this.width, this.height, this.depth);
-
     pop();
   }
 }

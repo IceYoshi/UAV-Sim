@@ -1,7 +1,7 @@
 var drawManager = new DrawManager();
 
 function setup() {
-  createCanvas(1000, 1000, WEBGL);
+  createCanvas(windowWidth, windowHeight, WEBGL);
 
   drawManager.add(new FlightZone(500));
 }
@@ -29,4 +29,8 @@ var cameraXOffset = 0;
 function mouseDragged() {
   cameraYOffset = mouseX - initialMouseX;
   cameraXOffset = mouseY - initialMouseY;
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
