@@ -1,9 +1,9 @@
 var drawManager = new DrawManager();
 
+var flightZone = new FlightZone(drawManager, 500);
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-
-  drawManager.add(new FlightZone(500));
 }
 
 function draw() {
@@ -11,26 +11,12 @@ function draw() {
   drawManager.draw();
 }
 
-function updateCamera() {
-  rotateX(cameraXOffset * 0.01);
-  rotateY(cameraYOffset * 0.01);
-  camera(0, 0, 0);
-}
-
-var initialMouseX = 0;
-var initialMouseY = 0;
-function mousePressed() {
-  oldMouseX = mouseX;
-  oldMouseY = mouseY;
-}
-
-var cameraYOffset = 0;
-var cameraXOffset = 0;
-function mouseDragged() {
-  cameraYOffset = mouseX - initialMouseX;
-  cameraXOffset = mouseY - initialMouseY;
-}
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function keyPressed(e) {
+  if(e.keyCode == 32 && flightZone) {
+    flightZone.enableFill = !flightZone.enableFill;
+  }
 }
