@@ -31,6 +31,7 @@ class UAV {
     this._noiseSeedY = random(100);
     this._noiseSeedZ = random(100);
     this._noiseOffset = random(100);
+    noiseDetail(8, 0.3);
   }
 
   draw() {
