@@ -20,7 +20,8 @@ function windowResized() {
 }
 
 function keyPressed(e) {
-  if(e.keyCode == 32 && flightZone) {
-    flightZone.enableFill = !flightZone.enableFill;
+  if(e.keyCode == 32) { // Space bar click
+    // Pause object updates. Draw calls are unaffected
+    drawManager.paused = !drawManager.paused;
   }
 }

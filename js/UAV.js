@@ -12,17 +12,25 @@ class UAV {
   set color(value) {
     this._color = value;
   }
+  get wobblingRadius() {
+    return this._wobblingRadius;
+  }
+  set wobblingRadius(value) {
+    this._wobblingRadius = Math.max(0, value);
+    this._offset = createVector(0,0,0);
+  }
 
   constructor(radius, position, color, wobblingRadius) {
     this._radius = radius || 50;
     this._position = position || createVector(0,0,0);
     this._color = color || color(0, 0, 0);
 
-    this._wobblingRadius = wobblingRadius || 0;
+    this._wobblingRadius = Math.max(0, wobblingRadius || 0);
     this._offset = createVector(0,0,0);
     this._noiseSeedX = random(100);
     this._noiseSeedY = random(100);
     this._noiseSeedZ = random(100);
+    this._noiseOffset = random(100);
   }
 
   draw() {
@@ -37,12 +45,12 @@ class UAV {
 
   update() { // Update wobbling offset of UAV
     noiseSeed(this._noiseSeedX);
-    let randomX = (noise(frameCount * 0.01) - 0.5) * this._wobblingRadius;
+    let randomX = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
     noiseSeed(this._noiseSeedY);
-    let randomY = (noise(frameCount * 0.01) - 0.5) * this._wobblingRadius;
+    let randomY = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
     noiseSeed(this._noiseSeedZ);
-    let randomZ = (noise(frameCount * 0.01) - 0.5) * this._wobblingRadius;
-
+    let randomZ = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
+    this._noiseOffset += 0.01;
     this._offset.set(randomX, randomY, randomZ);
   }
 
