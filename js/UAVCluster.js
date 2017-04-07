@@ -12,18 +12,15 @@ class UAVCluster {
   }
 
   draw() {
-    for(let i = 0; i < this._uavs.length; ++i) {
+    for(let i = 0; i < this._uavs.length; i++) {
       this._uavs[i].draw();
     }
   }
 
   update() {
-    for(let i = 0; i < this._uavs.length; ++i) {
-      if(typeof this._uavs[i].update === 'function') {
-        this._uavs[i].update();
-      }
+    for(let i = 0; i < this._uavs.length; i++) {
+      this._uavs[i].update();
     }
   }
-
 
 }

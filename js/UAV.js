@@ -57,7 +57,7 @@ class UAV {
   update() { // Update wobbling offset of UAV
     let randomOffset = new Object();
 
-    for (const key of Object.keys(this._noiseSeed)) {
+    for(const key of Object.keys(this._noiseSeed)) {
       noiseSeed(this._noiseSeed[key]);
       randomOffset[key] = this._wobblingRadius * (noise(this._noiseOffset) - 0.5);
     }
