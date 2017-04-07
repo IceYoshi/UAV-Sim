@@ -1,11 +1,9 @@
 class FlightZone {
 
-  constructor(drawManager, width, height, depth) {
+  constructor(width, height, depth) {
     this.width = width || 500;
     this.height = height || this.width;
     this.depth = depth || this.width;
-
-    drawManager.add(this);
   }
 
   draw() {

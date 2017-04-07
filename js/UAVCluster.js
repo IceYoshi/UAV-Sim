@@ -1,10 +1,29 @@
 class UAVCluster {
 
-  constructor(drawManager, count) {
+  constructor(count, flightZoneSize) {
+    this._uavs = [];
     let uav_radius = 10;
+
     for(var i = 0; i < count; i++) {
-      new DUAV(drawManager, uav_radius, createVector(-250, random(-250, 250), random(-250, 250)))
+      this._uavs.push(new DUAV(uav_radius, createVector(-flightZoneSize/2,
+                                              random(-flightZoneSize/2, flightZoneSize/2),
+                                              random(-flightZoneSize/2, flightZoneSize/2))));
     }
   }
+
+  draw() {
+    for(let i = 0; i < this._uavs.length; ++i) {
+      this._uavs[i].draw();
+    }
+  }
+
+  update() {
+    for(let i = 0; i < this._uavs.length; ++i) {
+      if(typeof this._uavs[i].update === 'function') {
+        this._uavs[i].update();
+      }
+    }
+  }
+
 
 }

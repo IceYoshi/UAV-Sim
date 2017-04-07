@@ -14,6 +14,7 @@ class DrawManager {
 
   add(drawable) {
     this.drawBuffer.push(drawable);
+    return drawable; // Useful for chaining
   }
 
   draw() {

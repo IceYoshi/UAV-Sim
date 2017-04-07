@@ -1,58 +1,69 @@
 class UAV {
 
-  get position() {
-    return this._position;
+  get anchorPosition() {
+    return this._anchorPosition;
   }
-  set position(value) {
-    this._position = value;
+  set anchorPosition(value) {
+    this._anchorPosition = value || createVector(0,0,0);
+  }
+  get radius() {
+    return this._radius;
+  }
+  set radius(value) {
+    this._radius = value || 50;
   }
   get color() {
     return this._color;
   }
   set color(value) {
-    this._color = value;
+    this._color = value || color(0);
   }
   get wobblingRadius() {
     return this._wobblingRadius;
   }
   set wobblingRadius(value) {
-    this._wobblingRadius = Math.max(0, value);
+    this._wobblingRadius = Math.max(0, value || 0);
     this._offset = createVector(0,0,0);
+  }
+  get actualPosition() {
+    return p5.Vector.add(this._anchorPosition, this._wobblingOffset);
   }
 
   constructor(radius, position, color, wobblingRadius) {
-    this._radius = radius || 50;
-    this._position = position || createVector(0,0,0);
-    this._color = color || color(0, 0, 0);
+    this.radius = radius;
+    this.anchorPosition = position;
+    this.color = color;
+    this.wobblingRadius = wobblingRadius;
 
-    this._wobblingRadius = Math.max(0, wobblingRadius || 0);
-    this._offset = createVector(0,0,0);
-    this._noiseSeedX = random(100);
-    this._noiseSeedY = random(100);
-    this._noiseSeedZ = random(100);
+    this._wobblingOffset = createVector(0,0,0);
+    this._noiseSeed = {
+      "x": random(100),
+      "y": random(100),
+      "z": random(100)
+    };
     this._noiseOffset = random(100);
-    noiseDetail(8, 0.3);
+    this.update();
   }
 
   draw() {
+    let pos = this.actualPosition;
     push();
-    translate(this._position.x + this._offset.x,
-      this._position.y + this._offset.y,
-      this._position.z + this._offset.z);
+    translate(pos.x, pos.y, pos.z);
     fill(this._color);
     sphere(this._radius);
     pop();
   }
 
   update() { // Update wobbling offset of UAV
-    noiseSeed(this._noiseSeedX);
-    let randomX = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
-    noiseSeed(this._noiseSeedY);
-    let randomY = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
-    noiseSeed(this._noiseSeedZ);
-    let randomZ = (noise(this._noiseOffset) - 0.5) * this._wobblingRadius;
+    let randomOffset = new Object();
+
+    for (const key of Object.keys(this._noiseSeed)) {
+      noiseSeed(this._noiseSeed[key]);
+      randomOffset[key] = this._wobblingRadius * (noise(this._noiseOffset) - 0.5);
+    }
     this._noiseOffset += 0.01;
-    this._offset.set(randomX, randomY, randomZ);
+
+    this._wobblingOffset.set(randomOffset["x"], randomOffset["y"], randomOffset["z"]);
   }
 
 }
