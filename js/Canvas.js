@@ -16,8 +16,8 @@ function initializeObjects() {
   let flightZoneSize = 500;
 
   drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(20, flightZoneSize));
-  drawManager.add(new MUAV(10));
+  drawManager.add(new UAVCluster(25, flightZoneSize, new MUAV(10)));
+
 }
 
 function draw() {
