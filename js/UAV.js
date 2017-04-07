@@ -49,7 +49,7 @@ class UAV {
       "z": random(1000)
     };
     this._noiseOffset = random(1000);
-    this.update();
+    this.updateWobblingOffset();
   }
 
   draw() {
@@ -62,8 +62,8 @@ class UAV {
   }
 
   update(uavArray) {
-    this.updateWobblingOffset();
-    this.performCollisionAvoidance(uavArray);
+    if(wobbling) this.updateWobblingOffset();
+    if(collision) this.performCollisionAvoidance(uavArray);
   }
 
   updateWobblingOffset() {
