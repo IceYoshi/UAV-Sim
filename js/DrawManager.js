@@ -18,7 +18,7 @@ class DrawManager {
   }
 
   draw() {
-    for(let i = 0; i < this.drawBuffer.length; ++i) {
+    for(let i = 0; i < this.drawBuffer.length; i++) {
       let drawObject = this.drawBuffer[i];
 
       // Update object if needed
