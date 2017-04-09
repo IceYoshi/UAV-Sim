@@ -2,11 +2,7 @@ var drawManager = new DrawManager();
 var settingsInfo;
 var wobbling = true;
 var collision = true;
-
-/*var uavTexture = null;
-function preload() {
-  uavTexture = loadImage("./assets/wheatley.png");
-}*/
+var flightZoneSize = 500;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -23,10 +19,9 @@ function initializeDOM() {
 }
 
 function initializeObjects() {
-  let flightZoneSize = 500;
 
   drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(25, flightZoneSize, new MUAV(10)));
+  drawManager.add(new UAVCluster(40, flightZoneSize, new MUAV(999,10)));
 }
 
 function draw() {

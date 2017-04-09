@@ -1,5 +1,5 @@
 var cameraOffset = new p5.Vector(0,0);
-var cameraScale = 1;
+var cameraScale = 0.75;
 function updateCamera() {
   let dampingFactor = 0.005;
   rotateX((dragDistance.x + cameraOffset.x) * dampingFactor);
