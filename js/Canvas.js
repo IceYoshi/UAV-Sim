@@ -2,6 +2,7 @@ var drawManager = new DrawManager();
 var settingsInfo;
 var wobbling = true;
 var collision = true;
+var formation = false;
 
 /*var uavTexture = null;
 function preload() {
@@ -26,7 +27,7 @@ function initializeObjects() {
   let flightZoneSize = 500;
 
   drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(25, flightZoneSize, new MUAV(10)));
+  drawManager.add(new UAVCluster(25, flightZoneSize, new MUAV(-1, 10)));
 }
 
 function draw() {
@@ -61,10 +62,14 @@ function keyPressed(e) {
       // Toggle UAV wobbling
       wobbling = !wobbling;
       break;
+    case 70: // Key: f
+      formation = !formation;
+      break;
   }
   updateSettingsInfo();
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>C</b>ollisions: ${collision}`);
+  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} |
+   <b>C</b>ollisions: ${collision} | <b>F</b>ormation: ${formation}`);
 }

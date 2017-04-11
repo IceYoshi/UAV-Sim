@@ -1,7 +1,7 @@
 class MUAV extends UAV {
 
-  constructor(radius, position) {
-    super(radius, position, 'red', 60, 150);
+  constructor(uavID, radius, position) {
+    super(uavID, radius, position, false, 'red', 60, 150);
   }
 
 }
