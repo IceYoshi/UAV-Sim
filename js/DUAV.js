@@ -2,15 +2,64 @@ class DUAV extends UAV {
 
   constructor(weight, radius, position) {
     super(weight, radius, position, 'green', 40, 25);
-    this.ch = false;
+    this.links = [];
+    this.shouldAcceptConnection = true;
+
+    this.statemanager = new UAVStateManager(UAVStateEnum.OWN_CLUSTERING);
   }
 
   update(uavArray){
     super.update(uavArray);
 
+    switch (this.statemanager.getCurrentState()) {
+      /*case UAVStateEnum.KHOPCA:
+        let neighbors = this.getNeighbors(uavArray);
+        this.doClustering(neighbors);
+        break;*/
+      case UAVStateEnum.OWN_CLUSTERING:
+        let neighbors = this.getNeighbors(uavArray);
+        this.doClustering(neighbors);
+      //console.log(this.getChildrenCount());
+        break;
+      default: break;
 
-    let neighbors = this.getNeighbors(uavArray);
-    this.doKhopca(neighbors);
+    }
+  }
+
+  checkDeadLinks(){
+    let arr2remove = [];
+    for(let i=0; i<this.links.length; ++i){
+      let uav = this.links[i];
+      if(this.distanceTo(uav)>this.rangeRadius){
+        arr2remove.push(uav);
+      }
+    }
+
+    for(let i=0; i<arr2remove.length; ++i){
+      this.links.filter(uav => uav.weight == arr2remove[i].weight);
+    }
+  }
+
+  doClustering(neighbors){
+    this.checkDeadLinks();
+    this.links.filter(uav => uav instanceof MUAV);
+
+    for(let i=0; i<neighbors.length; ++i){
+      let uav = neighbors[i];
+      if(!this.links.includes(uav)){
+          this.links.push(uav);
+      }
+    }
+  }
+
+  getChildrenCount(){
+    let c = this.child;
+    let counter = 0;
+    while(c.child){
+      c = c.child;
+      counter++;
+    }
+    console.log(counter);
   }
 
   doKhopca(neighbors){
@@ -38,29 +87,24 @@ class DUAV extends UAV {
   }
 
     rule1(neighbors){
-      /*let maxW = this.maxWeightofNeighborhood(neighbors);
-      let rule1Neighbors = neighbors.filter(uav => uav.weight > this.weight  &&
-                                                  uav.weight == maxW);
-      if(rule1Neighbors.length>0){
-        this.weight = max([this.maxWeight,maxW-1]);
-        while(this.links.length > 0) {this.links.pop();}  // faster than any other procedure like .. = [] or .length=0, etc.
-        this.links.push(rule1Neighbors[0]);
-      }*/
-
       let maxW = this.maxWeightofNeighborhood(neighbors);
       let rule1Neighbors = neighbors.filter(uav => uav.weight > this.weight  &&
                                                   uav.weight == maxW);
-
       if(maxW > this.weight){
         this.weight = max([this.minWeight,maxW-1]);
-        while(this.links.length > 0) {this.links.pop();}  // faster than any other procedure like .. = [] or .length=0, etc.
-        this.links.push(rule1Neighbors[0]);
+
+        if(rule1Neighbors.length>0){
+          rule1Neighbors.sort(function(a,b){return b-a});
+          this.parent = rule1Neighbors[0];
+          rule1Neighbors[0].child = this;
+        }
       }
     }
 
     rule2(neighbors){
       if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
-          this.weight = this.maxWeight;
+          this.weight = this.maxWeight; // cluster heading()
+          this.statemanager.goToState(UAVStateEnum.OWN_CLUSTERING);
       }
     }
 

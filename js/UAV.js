@@ -37,10 +37,9 @@ class UAV {
 
   constructor(weight, radius, position, color, collisionThreshold, wobblingRadius) {
     this.weight = weight;
-    this.links = [];
     this.minWeight = 0;
     this.maxWeight = 50;
-    this.rangeRadius = 400;
+    this.rangeRadius = 120;
     this.radius = radius;
     this.anchorPosition = position;
     this.color = color;
