@@ -62,6 +62,7 @@ class UAV {
   }
 
   update(uavArray) {
+    print(uavArray.length)
     if(wobbling) this.updateWobblingOffset();
     if(collision) this.performCollisionAvoidance(uavArray);
   }
