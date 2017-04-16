@@ -21,7 +21,7 @@ function initializeDOM() {
 function initializeObjects() {
 
   drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(40, flightZoneSize, new MUAV(999,10)));
+  drawManager.add(new UAVCluster(40, flightZoneSize, new MUAV(41394,10)));
 }
 
 function draw() {

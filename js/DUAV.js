@@ -1,8 +1,26 @@
 class DUAV extends UAV {
 
-  constructor(weight, radius, position) {
-    super(weight, radius, position, 'green', 40, 25);
-    this.ch = false;
+  constructor(id, weight, radius, position) {
+    super(id, radius, position, 'green', 40, 25);
+
+    this.weight = weight;
+    this.parent = null;
+    this.children = [];
+    this.minWeight = 0;
+    this.maxWeight = 50;
+    this.textWeightGraphics = createGraphics(3*radius,3*radius);
+  }
+
+  draw(){
+    let pos = this.actualPosition;
+    push();
+    translate(pos.x, pos.y, pos.z);
+    fill(this._color);
+    this.textWeightGraphics.background(this.color);
+    this.textWeightGraphics.text(this.weight, this.radius, this.radius);
+    texture(this.textWeightGraphics);
+    sphere(this._radius);
+    pop();
   }
 
   update(uavArray){
@@ -37,16 +55,21 @@ class DUAV extends UAV {
     pop();
   }
 
-    rule1(neighbors){
-      /*let maxW = this.maxWeightofNeighborhood(neighbors);
-      let rule1Neighbors = neighbors.filter(uav => uav.weight > this.weight  &&
-                                                  uav.weight == maxW);
-      if(rule1Neighbors.length>0){
-        this.weight = max([this.maxWeight,maxW-1]);
-        while(this.links.length > 0) {this.links.pop();}  // faster than any other procedure like .. = [] or .length=0, etc.
-        this.links.push(rule1Neighbors[0]);
-      }*/
+  appendChild(uav){
+    if(!this.existsChild(uav)){
+      this.children.push(uav);
+    }
+  }
 
+  removeChild(uav){
+    this.children = this.children.filter(u => u.id != uav.id);
+  }
+
+  existsChild(uav){
+    return this.children.filter(child => child.id == uav.id).length>0;
+  }
+
+    rule1(neighbors){
       let maxW = this.maxWeightofNeighborhood(neighbors);
       let rule1Neighbors = neighbors.filter(uav => uav.weight == maxW);
 
@@ -54,8 +77,10 @@ class DUAV extends UAV {
         this.weight = max([this.minWeight,maxW-1]);
 
         if(rule1Neighbors.length>0){
-          while(this.links.length > 0) {this.links.pop();}
-          this.links.push(rule1Neighbors[0]);
+          if(this.parent)
+              this.parent.removeChild(this);
+          this.parent = rule1Neighbors[0];
+          rule1Neighbors[0].appendChild(this);
         }
       }
     }
@@ -63,7 +88,11 @@ class DUAV extends UAV {
     rule2(neighbors){
       if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
           this.weight = this.maxWeight;
-          while(this.links.length > 0) {this.links.pop();}
+
+          // important, delete link that exists previously before being a clusterhead!!
+          if(this.parent)
+            this.parent.removeChild(this);
+          this.parent = null;
       }
     }
 

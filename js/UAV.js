@@ -35,11 +35,8 @@ class UAV {
     return p5.Vector.add(this._anchorPosition, this._wobblingOffset);
   }
 
-  constructor(weight, radius, position, color, collisionThreshold, wobblingRadius) {
-    this.weight = weight;
-    this.links = [];
-    this.minWeight = 0;
-    this.maxWeight = 50;
+  constructor(id, radius, position, color, collisionThreshold, wobblingRadius) {
+    this.id = id;
     this.rangeRadius = 120;
     this.radius = radius;
     this.anchorPosition = position;
@@ -55,7 +52,6 @@ class UAV {
     };
     this._noiseOffset = random(1000);
     this.updateWobblingOffset();
-    this.textWeightGraphics = createGraphics(3*radius,3*radius);
   }
 
   draw() {
@@ -63,9 +59,6 @@ class UAV {
     push();
     translate(pos.x, pos.y, pos.z);
     fill(this._color);
-    this.textWeightGraphics.background(this.color);
-    this.textWeightGraphics.text(this.weight, this.radius, this.radius);
-    texture(this.textWeightGraphics);
     sphere(this._radius);
     pop();
   }
