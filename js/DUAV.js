@@ -9,6 +9,7 @@ class DUAV extends UAV {
     this.minWeight = 0;
     this.maxWeight = 50;
     this.textWeightGraphics = createGraphics(3*radius,3*radius);
+    this.statemanager = new UAVStateManager(UAVStateEnum.KHOPCA);
   }
 
   draw(){
@@ -26,9 +27,13 @@ class DUAV extends UAV {
   update(uavArray){
     super.update(uavArray);
 
-
-    let neighbors = this.getNeighbors(uavArray);
-    this.doKhopca(neighbors);
+    switch (this.statemanager.getCurrentState()) {
+          case UAVStateEnum.KHOPCA:
+              this.doKhopca(this.getNeighbors(uavArray));
+          case UAVStateEnum.OWN_CLUSTERING:
+            break;
+          default: break;
+    }
   }
 
   doKhopca(neighbors){
