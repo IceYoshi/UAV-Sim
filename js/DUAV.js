@@ -48,19 +48,22 @@ class DUAV extends UAV {
       }*/
 
       let maxW = this.maxWeightofNeighborhood(neighbors);
-      let rule1Neighbors = neighbors.filter(uav => uav.weight > this.weight  &&
-                                                  uav.weight == maxW);
+      let rule1Neighbors = neighbors.filter(uav => uav.weight == maxW);
 
       if(maxW > this.weight){
         this.weight = max([this.minWeight,maxW-1]);
-        while(this.links.length > 0) {this.links.pop();}  // faster than any other procedure like .. = [] or .length=0, etc.
-        this.links.push(rule1Neighbors[0]);
+
+        if(rule1Neighbors.length>0){
+          while(this.links.length > 0) {this.links.pop();}
+          this.links.push(rule1Neighbors[0]);
+        }
       }
     }
 
     rule2(neighbors){
       if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
           this.weight = this.maxWeight;
+          while(this.links.length > 0) {this.links.pop();}
       }
     }
 
@@ -87,7 +90,7 @@ class DUAV extends UAV {
     maxWeightofNeighborhood(neighbors){
       if(neighbors.length==0) return this.minWeight-1;
       let max = neighbors[0].weight;
-      for(let i=0; i<neighbors.length;++i){
+      for(let i=1; i<neighbors.length;++i){
         if(neighbors[i].weight > max)
           max = neighbors[i].weight;
       }
