@@ -7,5 +7,6 @@ const UAVStateEnum = {
 const UAVColor = {
   CLUSTER_HEAD:   "blue",
   DUAV:   "green",
-  MUAV:   "red"
+  MUAV:   "red",
+  OWN_CLUSTERING: "purple"
 }

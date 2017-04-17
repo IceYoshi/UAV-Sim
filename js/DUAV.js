@@ -71,6 +71,7 @@ class DUAV extends UAV {
 
   startOwnClustering(){
     this.shouldAcceptChildren = false;
+    if(!this.isClusterHead())this.color = UAVColor.OWN_CLUSTERING;
     this.statemanager.goToState(UAVStateEnum.OWN_CLUSTERING);
     for(let i=0; i<this.children.length; ++i){
       this.children[i].startOwnClustering();
@@ -89,7 +90,6 @@ class DUAV extends UAV {
     this.rule2(neighbors);
     this.rule3(neighbors);
     this.rule4(neighbors);
-    this.updateColor();
 
     if(this.isClusterHead()){
         if(this.getNumberOfChildren() >= this.leastNumberOfChildren){
@@ -132,15 +132,12 @@ class DUAV extends UAV {
     return this.children.filter(child => child.id == uav.id).length>0;
   }
 
-  updateColor(){
-    this.weight == this.maxWeight ? this.color = UAVColor.CLUSTER_HEAD : this.color = UAVColor.DUAV;
-  }
-
     rule1(neighbors){
       let maxW = this.maxWeightofNeighborhood(neighbors);
       let rule1Neighbors = neighbors.filter(uav => uav.weight == maxW);
 
       if(maxW > this.weight){
+        this.color = UAVColor.DUAV;
         this.weight = max([this.minWeight,maxW-1]);
 
         if(rule1Neighbors.length>0){
@@ -156,6 +153,7 @@ class DUAV extends UAV {
       if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
           // from here: Cluster Head!
           this.weight = this.maxWeight;
+          this.color = UAVColor.CLUSTER_HEAD;
 
           // important, delete link that exists previously before being a clusterhead!!
           if(this.parent)
@@ -168,6 +166,7 @@ class DUAV extends UAV {
       let maxW = this.maxWeightofNeighborhood(neighbors);
       if(maxW>this.minWeight-1 && maxW <= this.weight && this.weight != this.maxWeight){
         this.weight -= 1;
+        this.color = UAVColor.DUAV;
       }
     }
 
@@ -177,6 +176,7 @@ class DUAV extends UAV {
       if(maxW == this.maxWeight && this.weight == this.maxWeight){
         this.weight = random(this.weight, maxW);
         this.weight -= 1;
+        this.color = UAVColor.DUAV;
       }
     }
 
