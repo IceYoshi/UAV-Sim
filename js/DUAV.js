@@ -78,10 +78,36 @@ class DUAV extends UAV {
     }
   }
 
+  getClusterNeighbors(neighbors){
+    let ownClusterId = this.getClusterId();
+    return neighbors.filter(uav => ownClusterId == uav.getClusterId());
+  }
+
   doOwnClustering(neighbors){
       let targetPos = this.calculateMeanPosition(neighbors);
       let dir = createVector(targetPos.x - this.anchorPosition.x,targetPos.y - this.anchorPosition.y,targetPos.z - this.anchorPosition.z)
       this.anchorPosition.add(dir.normalize());
+
+
+      if(this.isClusterHead()){
+        let targetChildrenCount = this.getRescursivelyNumberOfChildren();
+        let clusterNeighbors = this.getClusterNeighbors(neighbors);
+
+        if(targetChildrenCount == clusterNeighbors.length){
+          this.color = UAVColor.OWN_CLUSTERING_LEADER;
+          this.statemanager.goToState(UAVStateEnum.START_OWN_CLUSTERING);
+          this.targetChildrenCount = targetChildrenCount;
+        }
+      }
+  }
+
+  getRescursivelyNumberOfChildren(){
+    let c = 0;
+    for(let i=0; i<this.children.length; ++i){
+      let child = this.children[i];
+      c += child.getRescursivelyNumberOfChildren() + 1;
+    }
+    return c;
   }
 
   doKhopca(neighbors){
@@ -92,7 +118,7 @@ class DUAV extends UAV {
     this.rule4(neighbors);
 
     if(this.isClusterHead()){
-        if(this.getNumberOfChildren() >= this.leastNumberOfChildren){
+        if(this.getRescursivelyNumberOfChildren() >= this.leastNumberOfChildren){
           this.startOwnClustering();
         }
     }

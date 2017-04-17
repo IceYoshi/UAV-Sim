@@ -8,5 +8,6 @@ const UAVColor = {
   CLUSTER_HEAD:   "blue",
   DUAV:   "green",
   MUAV:   "red",
-  OWN_CLUSTERING: "purple"
+  OWN_CLUSTERING: "purple",
+  OWN_CLUSTERING_LEADER: "yellow"
 }
