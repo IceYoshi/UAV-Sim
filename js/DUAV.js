@@ -1,15 +1,18 @@
 class DUAV extends UAV {
 
   constructor(id, weight, radius, position) {
-    super(id, radius, position, 'green', 40, 25);
+    super(id, radius, position, UAVColor.DUAV, 40, 25);
 
     this.weight = weight;
     this.parent = null;
     this.children = [];
     this.minWeight = 0;
     this.maxWeight = 50;
+    this.leastNumberOfChildren = 5;
     this.textWeightGraphics = createGraphics(3*radius,3*radius);
     this.statemanager = new UAVStateManager(UAVStateEnum.KHOPCA);
+
+    this.shouldAcceptChildren = true;
   }
 
   draw(){
@@ -30,17 +33,78 @@ class DUAV extends UAV {
     switch (this.statemanager.getCurrentState()) {
           case UAVStateEnum.KHOPCA:
               this.doKhopca(this.getNeighbors(uavArray));
+              break;
           case UAVStateEnum.OWN_CLUSTERING:
+              this.doOwnClustering(this.getNeighbors(uavArray));
             break;
           default: break;
     }
   }
 
+  isClusterHead(){
+    return this.weight==this.maxWeight;
+  }
+
+  // returns id of cluster head
+  getClusterId(){
+    let p = this;
+    let q;
+    while(p){
+      q = p;
+      p = p.parent;
+    }
+    return q.id;
+  }
+
+  calculateMeanPosition(neighbors){
+    let clusterNeighbors = neighbors.filter(uav => this.getClusterId() == uav.getClusterId());
+
+    // calculate mean of neighbors within same cluster
+    clusterNeighbors.push(this);
+    let sum = createVector(0,0,0);
+    for(let i=0; i<clusterNeighbors.length; ++i){
+      let uav = clusterNeighbors[i];
+      sum.add(uav.anchorPosition);
+    }
+    return sum.div(clusterNeighbors.length);
+  }
+
+  startOwnClustering(){
+    this.shouldAcceptChildren = false;
+    this.statemanager.goToState(UAVStateEnum.OWN_CLUSTERING);
+    for(let i=0; i<this.children.length; ++i){
+      this.children[i].startOwnClustering();
+    }
+  }
+
+  doOwnClustering(neighbors){
+      let targetPos = this.calculateMeanPosition(neighbors);
+      let dir = createVector(targetPos.x - this.anchorPosition.x,targetPos.y - this.anchorPosition.y,targetPos.z - this.anchorPosition.z)
+      this.anchorPosition.add(dir.normalize());
+  }
+
   doKhopca(neighbors){
+    neighbors = neighbors.filter(uav => uav.shouldAcceptChildren);
     this.rule1(neighbors);
     this.rule2(neighbors);
     this.rule3(neighbors);
     this.rule4(neighbors);
+    this.updateColor();
+
+    if(this.isClusterHead()){
+        if(this.getNumberOfChildren() >= this.leastNumberOfChildren){
+          this.startOwnClustering();
+        }
+    }
+  }
+
+  getNumberOfChildren(){
+    let c = 0;
+    for(let i=0; i<this.children.length; ++i){
+      let child = this.children[i];
+      c += child.getNumberOfChildren() + 1;
+    }
+    return c;
   }
 
   draw(){
@@ -48,12 +112,7 @@ class DUAV extends UAV {
     push();
     translate(pos.x, pos.y, pos.z);
     fill(this._color);
-    if(this.weight != this.maxWeight){
-        this.textWeightGraphics.background(this.color);
-    }
-    else{ // cluster head
-        this.textWeightGraphics.background("blue");
-    }
+    this.textWeightGraphics.background(this.color);
     this.textWeightGraphics.text(this.weight, this.radius, this.radius);
     texture(this.textWeightGraphics);
     sphere(this._radius);
@@ -61,9 +120,8 @@ class DUAV extends UAV {
   }
 
   appendChild(uav){
-    if(!this.existsChild(uav)){
-      this.children.push(uav);
-    }
+    if(!this.existsChild(uav))
+        this.children.push(uav);
   }
 
   removeChild(uav){
@@ -72,6 +130,10 @@ class DUAV extends UAV {
 
   existsChild(uav){
     return this.children.filter(child => child.id == uav.id).length>0;
+  }
+
+  updateColor(){
+    this.weight == this.maxWeight ? this.color = UAVColor.CLUSTER_HEAD : this.color = UAVColor.DUAV;
   }
 
     rule1(neighbors){
@@ -92,6 +154,7 @@ class DUAV extends UAV {
 
     rule2(neighbors){
       if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
+          // from here: Cluster Head!
           this.weight = this.maxWeight;
 
           // important, delete link that exists previously before being a clusterhead!!
