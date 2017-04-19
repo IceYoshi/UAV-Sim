@@ -1,26 +1,38 @@
-var cameraOffset = new p5.Vector(0,0);
+var cameraTranslation = new p5.Vector(0,0,0);
+var cameraRotation = new p5.Vector(0,0);
 var cameraScale = 1;
+var clickPoint = new p5.Vector(0,0)
 function updateCamera() {
-  let dampingFactor = 0.005;
-  rotateX((dragDistance.x + cameraOffset.x) * dampingFactor);
-  rotateY((dragDistance.y + cameraOffset.y) * dampingFactor);
   scale(cameraScale);
-  camera(0, 0, 0);
+  rotateX(cameraRotation.x);
+  rotateY(cameraRotation.y);
+  camera(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z);
 }
 
-var clickPoint = new p5.Vector(0,0);
 function mousePressed() {
-  clickPoint.set(mouseX, mouseY);
+  clickPoint.set(mouseX, mouseY)
+  return false;
 }
 
-var dragDistance = new p5.Vector(0,0);
 function mouseDragged() {
-  dragDistance.set(mouseY - clickPoint.y, mouseX - clickPoint.x);
+  if(mouseButton == LEFT) {
+    let cameraRotationDampingFactor = 0.005;
+    cameraRotation.add(createVector(
+      (mouseY - clickPoint.y),
+      (mouseX - clickPoint.x))
+      .mult(cameraRotationDampingFactor))
+  } else if(mouseButton == RIGHT) {
+    cameraTranslation.add(
+      (clickPoint.x - mouseX) * cos(cameraRotation.y) - (clickPoint.y - mouseY) * sin(cameraRotation.x) * sin(cameraRotation.y),
+      (clickPoint.y - mouseY) * cos(cameraRotation.x),
+      (clickPoint.x - mouseX) * sin(cameraRotation.y) + (clickPoint.y - mouseY) * sin(cameraRotation.x) * cos(cameraRotation.y))
+  }
+  clickPoint.set(mouseX, mouseY)
+  return false;
 }
 
 function mouseReleased() {
-  cameraOffset.add(dragDistance);
-  dragDistance.set(0,0);
+  return false;
 }
 
 function mouseWheel(event) {
@@ -30,5 +42,5 @@ function mouseWheel(event) {
   } else {
     cameraScale *= scaleFactor;
   }
-  return false; // Prevent page from scrolling
+  return false;
 }
