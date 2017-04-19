@@ -2,6 +2,7 @@ var drawManager = new DrawManager();
 var settingsInfo;
 var wobbling = true;
 var collision = true;
+var chasing = false;
 
 /*var uavTexture = null;
 function preload() {
@@ -46,9 +47,13 @@ function keyPressed(e) {
       // Pause object updates. Draw calls are unaffected
       drawManager.paused = !drawManager.paused;
       break;
-    case 67: // Key: c
+    case 65: // Key: a
       // Toggle UAV collision avoidance
       collision = !collision;
+      break;
+    case 67: // Key: c
+      // Toggle chasing phase
+      chasing = !chasing;
       break;
     case 82: // Key: r
       // Reset canvas
@@ -66,5 +71,5 @@ function keyPressed(e) {
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>C</b>ollisions: ${collision}`);
+  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing}`);
 }
