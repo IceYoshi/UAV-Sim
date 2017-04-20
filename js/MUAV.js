@@ -1,7 +1,8 @@
 class MUAV extends UAV {
 
   constructor(radius, position) {
-    super(radius, position, 'red', 1, 80, 200);
+    // radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange
+    super(radius, position, 'red', 0.8, 80, 200, flightZoneSize/5);
   }
 
 }

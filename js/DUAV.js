@@ -1,7 +1,8 @@
 class DUAV extends UAV {
 
   constructor(id, radius, position) {
-    super(radius, position, 'green', 1.5, 40, 25);
+    // radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange
+    super(radius, position, 'green', 1, 40, 25, flightZoneSize/5);
     this._id = id;
   }
 

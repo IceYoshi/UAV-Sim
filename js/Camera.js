@@ -15,17 +15,17 @@ function mousePressed() {
 }
 
 function mouseDragged() {
+  let dx = clickPoint.x - mouseX;
+  let dy = clickPoint.y - mouseY
   if(mouseButton == LEFT) {
     let cameraRotationDampingFactor = 0.005;
-    cameraRotation.add(createVector(
-      (mouseY - clickPoint.y),
-      (mouseX - clickPoint.x))
+    cameraRotation.add(createVector(-dy, -dx)
       .mult(cameraRotationDampingFactor))
   } else if(mouseButton == RIGHT) {
     cameraTranslation.add(
-      (clickPoint.x - mouseX) * cos(cameraRotation.y) - (clickPoint.y - mouseY) * sin(cameraRotation.x) * sin(cameraRotation.y),
-      (clickPoint.y - mouseY) * cos(cameraRotation.x),
-      (clickPoint.x - mouseX) * sin(cameraRotation.y) + (clickPoint.y - mouseY) * sin(cameraRotation.x) * cos(cameraRotation.y))
+      dx * cos(cameraRotation.y) - dy * sin(cameraRotation.x) * sin(cameraRotation.y),
+      dy * cos(cameraRotation.x),
+      dx * sin(cameraRotation.y) + dy * sin(cameraRotation.x) * cos(cameraRotation.y))
   }
   clickPoint.set(mouseX, mouseY)
   return false;

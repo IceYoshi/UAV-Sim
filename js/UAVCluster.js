@@ -1,7 +1,6 @@
 class UAVCluster {
 
-  constructor(count, flightZoneSize, muav, communicationRange) {
-    this._communicationRange = communicationRange || 0;
+  constructor(count, muav) {
     this._duavs = [];
     this._muavs = [muav];
     let uav_radius = 10;
@@ -22,7 +21,7 @@ class UAVCluster {
   update() {
     for(let i = 0; i < this._uavs.length; i++) {
       this._uavs[i].update(this._uavs.filter(uav =>
-        uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._communicationRange
+        uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._uavs[i].communicationRange
       ), this._muavs);
     }
   }

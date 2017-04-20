@@ -35,7 +35,7 @@ class UAV {
     return p5.Vector.add(this._anchorPosition, this._wobblingOffset);
   }
   set maxSpeed(value) {
-    this._maxSpeed = Math.max(0, value || 0.5);
+    this._maxSpeed = Math.max(0, value || 1);
   }
   get maxSpeed() {
     return this._maxSpeed;
@@ -46,14 +46,22 @@ class UAV {
   get collisionThreshold() {
     return this._collisionThreshold;
   }
+  set communicationRange(value) {
+    this._communicationRange = Math.max(0, value || 0);
+  }
+  get communicationRange() {
+    return this._communicationRange;
+  }
 
-  constructor(radius, position, color, maxSpeed, collisionThreshold, wobblingRadius) {
+  constructor(radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange) {
     this.radius = radius;
     this.anchorPosition = position;
     this.color = color;
     this.maxSpeed = maxSpeed;
     this.collisionThreshold = collisionThreshold;
     this.wobblingRadius = wobblingRadius;
+    this.communicationRange = communicationRange;
+    this._cumulativeForce = createVector(0,0,0);
 
     this._wobblingOffset = createVector(0,0,0);
     this._noiseSeed = {
@@ -77,6 +85,15 @@ class UAV {
   update(nearbyUAVs, mUAVs) {
     if(wobbling) this.updateWobblingOffset();
     if(collision) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
+
+    this.executeMovement();
+
+    let pos = this.actualPosition;
+    let offset = this instanceof DUAV ? 0 : flightZoneSize/5;
+    let cx = constrain(pos.x, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
+    let cy = constrain(pos.y, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
+    let cz = constrain(pos.z, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
+    this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 
   updateWobblingOffset() {
@@ -99,7 +116,8 @@ class UAV {
         if(distance < this.collisionThreshold) {
           vectorSum.add(this.headingFrom(uav.actualPosition)
             .normalize()
-            .mult(this.collisionThreshold + 10 - distance));
+            .mult(1 + (distance/this.collisionThreshold))
+          )
         }
       }
       this.applyForce(vectorSum);
@@ -125,8 +143,13 @@ class UAV {
     this.applyForce(this.headingTo(pos));
   }
 
-  applyForce(v) {
-    this.anchorPosition.add(v.normalize().mult(this.maxSpeed));
+  applyForce(v, w) {
+    this._cumulativeForce.add(v.normalize().mult(w || 1));
+  }
+
+  executeMovement() {
+    this.anchorPosition.add(this._cumulativeForce.limit(this.maxSpeed));
+    this._cumulativeForce.set(0,0,0);
   }
 
 }

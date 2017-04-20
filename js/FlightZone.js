@@ -1,7 +1,7 @@
 class FlightZone {
 
   constructor(width, height, depth) {
-    this.width = width || 500;
+    this.width = width || flightZoneSize;
     this.height = height || this.width;
     this.depth = depth || this.width;
   }
