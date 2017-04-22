@@ -1,13 +1,12 @@
 const UAVStateEnum = {
   KHOPCA:           "KHOPCA",
   OWN_CLUSTERING:   "OWN_CLUSTERING",
-  PHORMATION:       "PHORMATION"
+  PHORMATION:       "FORMATION"
 };
 
 const UAVColor = {
-  CLUSTER_HEAD:   "blue",
-  DUAV:   "green",
+  CLUSTER_HEAD:   "black",
+  DUAV:   "white",
   MUAV:   "red",
-  OWN_CLUSTERING: "purple",
-  OWN_CLUSTERING_LEADER: "yellow"
+  BRANCH_COLOR: ["#d500cc","#FFFF00","#00FF00","#FF7F00","#9400D3","#0000FF"]
 }

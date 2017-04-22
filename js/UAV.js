@@ -37,11 +37,11 @@ class UAV {
 
   constructor(id, radius, position, color, collisionThreshold, wobblingRadius) {
     this.id = id;
-    this.rangeRadius = 120;
+    this.rangeRadius = 100;
     this.radius = radius;
     this.anchorPosition = position;
     this.color = color;
-    this._collisionThreshold = collisionThreshold || 50;
+    this._collisionThreshold = collisionThreshold || 100;
     this.wobblingRadius = wobblingRadius;
 
     this._wobblingOffset = createVector(0,0,0);
@@ -77,6 +77,10 @@ class UAV {
     this._noiseOffset += 0.01;
 
     this._wobblingOffset.set(randomOffset.x, randomOffset.y, randomOffset.z);
+  }
+
+  getNeighbors(uavArray){
+      return uavArray.filter(uav => uav.distanceTo(this) <= this.rangeRadius);
   }
 
   performCollisionAvoidance(uavArray) {

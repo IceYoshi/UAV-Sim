@@ -4,10 +4,10 @@ class UAVCluster {
     this._duavs = [];
     this._muavs = [muav];
     let uav_radius = 10;
-    for(var i = 0; i < count; i++) {
+    for(var i = 0; i < count /*15*/; i++) {
       this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
-                                                          random(-flightZoneSize/2, flightZoneSize/2),
-                                                          random(-flightZoneSize/2, flightZoneSize/2)
+                                                              random(-flightZoneSize/2, flightZoneSize/2),
+                                                              (-flightZoneSize/2, flightZoneSize/2)
                                                         )));
     }
     this._uavs = this._duavs.concat(this._muavs);
@@ -30,35 +30,14 @@ class UAVCluster {
     for(let i = 0; i < this._muavs.length; i++) {
       this._muavs[i].update(this._uavs.filter(uav => uav != this._uavs[i]));
     }
-/*
-    let o = 0;
-    let k = 0;
-      for(let i = 0; i < this._duavs.length; i++) {
-        let uav = this._duavs[i];
-        if(uav.statemanager.getCurrentState() == UAVStateEnum.KHOPCA)
-          k++;
-        if(uav.statemanager.getCurrentState() == UAVStateEnum.OWN_CLUSTERING)
-            o++;
-      }
-
-      console.log("k: "+k+" , o: "+o);*/
-
   }
 
   drawLinks(){
     beginShape(LINES);
     fill(0);  stroke(1);
     for(let i = 0; i < this._duavs.length; ++i) {
-        let current_uav = this._duavs[i];
-        if(current_uav.parent){
-          let parent = current_uav.parent;
-          push();
-          let pos1 = current_uav.actualPosition;
-          let pos2 = parent.actualPosition;
-          vertex(pos1.x, pos1.y, pos1.z);
-          vertex(pos2.x, pos2.y, pos2.z);
-          pop();
-        }
+        let current_duav = this._duavs[i];
+        current_duav.drawCluster();
     }
     endShape();
   }
