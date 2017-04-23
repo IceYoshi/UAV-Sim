@@ -31,7 +31,7 @@ class DUAV extends UAV {
   }
 
   drawOwnWeight(){
-    this.textWeightGraphics.background(this.color);
+    this.textWeightGraphics.background(this._color);
     this.textWeightGraphics.stroke(this.weightStrokeColor);
     this.textWeightGraphics.text(this.ownWeight, this.radius, this.radius);
     texture(this.textWeightGraphics);
@@ -124,9 +124,18 @@ class DUAV extends UAV {
         uav.ownWeight = this.ownWeight+1;
         uav.shouldFlock = false;
         this.shouldAcceptChildren = uav.shouldAcceptChildren = false;
-        uav.color = this.color;
+        uav._color = this._color;
         this.didGetNewChild();
       }
+  }
+
+  startAcceptingNewLeaf(){
+    if(this.child){
+      this.child.startAcceptingNewLeaf();
+    }
+    else{ // leaf
+      this.shouldAcceptChildren = true;
+    }
   }
 
   didGetNewChild(){
@@ -169,7 +178,7 @@ class DUAV extends UAV {
     this.ownWeight = 0;
     this.shouldAcceptChildren = false;
     this.shouldFlock = true;
-    this.color = UAVColor.DUAV;
+    this._color = UAVColor.DUAV;
     this.parent = null;
     if(this.child) this.child.didBecomeDUAV();
     this.child = null;
@@ -198,7 +207,7 @@ class DUAV extends UAV {
     if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
         // from here: Cluster Head!
         this.weight = this.maxWeight;
-        this.color = UAVColor.CLUSTER_HEAD;
+        this._color = UAVColor.CLUSTER_HEAD;
         this.didBecomeClusterHead(neighbors);
     }
   }

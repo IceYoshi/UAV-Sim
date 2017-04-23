@@ -52,26 +52,20 @@ class ClusterHead{
           this.branches[i].shouldAcceptChildren = true;
         }
     }
-    child.color = UAVColor.BRANCH_COLOR[this.branches.length%this.nrOfBranches];
+    child._color = UAVColor.BRANCH_COLOR[this.branches.length%this.nrOfBranches];
   }
 
   didGetNewChild(){
     if(++this.nrOfIncomingMsg == this.branches.length){
-      this.startAcceptingAdditionalChild();
+      this.startAcceptingAdditionalLeaf();
       this.nrOfIncomingMsg = 0;
     }
   }
 
-  startAcceptingAdditionalChild(){
+  startAcceptingAdditionalLeaf(){
     for(let i=0; i<this.branches.length;++i){
-        let head = this.branches[i];
-        let tail = head.child;
-        while(tail){
-            head = tail;
-            tail = tail.child;
-        }
-        tail = head;
-        tail.shouldAcceptChildren = true;
+        let branch = this.branches[i];
+        branch.startAcceptingNewLeaf();
     }
   }
 
