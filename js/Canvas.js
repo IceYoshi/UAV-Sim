@@ -20,12 +20,12 @@ function initializeDOM() {
 
 function initializeObjects() {
   drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(50, flightZoneSize, new MUAV(null,11)));
+  drawManager.add(new UAVCluster(50, flightZoneSize, new MUAV(null,10)));
 }
 
 function draw() {
   updateCamera();
-  background("#e7e7e7");
+  background(UAVColor.FLIGHTZONE);
   drawManager.draw();
 }
 

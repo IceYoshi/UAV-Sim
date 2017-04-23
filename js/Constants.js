@@ -5,6 +5,7 @@ const UAVStateEnum = {
 };
 
 const UAVColor = {
+  FLIGHTZONE: "#e7e7e7",
   CLUSTER_HEAD:   "black",
   DUAV:   "white",
   MUAV:   "red",

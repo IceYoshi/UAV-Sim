@@ -11,7 +11,6 @@ class DUAV extends UAV {
     this.leastNumberOfChildren = 5;
     this.textWeightGraphics = createGraphics(3*radius,3*radius);
     this.weightStrokeColor = "black";
-    this.statemanager = new UAVStateManager(UAVStateEnum.KHOPCA);
 
     this.clusterHead = null;
 
@@ -172,7 +171,7 @@ class DUAV extends UAV {
 
   didBecomeDUAV(){
     if(this.isClusterHead()){
-      this.clusterHead.clearBranches();
+      this.clusterHead.willBecomeDUAV();
       this.clusterHead = null;
     }
     this.ownWeight = 0;

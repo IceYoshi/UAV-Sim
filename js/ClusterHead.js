@@ -36,6 +36,10 @@ class ClusterHead{
     this.branches = [];
   }
 
+  willBecomeDUAV(){
+    this.clearBranches();
+  }
+
   childDidAskForConnection(child){
     return this.branches.length<this.nrOfBranches;
   }
