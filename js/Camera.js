@@ -4,9 +4,10 @@ var cameraScale = 1;
 var clickPoint = new p5.Vector(0,0)
 function updateCamera() {
   scale(cameraScale);
+  translate(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z);
   rotateX(cameraRotation.x);
   rotateY(cameraRotation.y);
-  camera(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z);
+  camera(0,0,0);
 }
 
 function mousePressed() {
@@ -23,11 +24,7 @@ function mouseDragged() {
       createVector(dy, dx).mult(cameraRotationDampingFactor)
     )
   } else if(mouseButton == RIGHT) {
-    cameraTranslation.add(
-      dx * cos(cameraRotation.y) - dy * sin(cameraRotation.x) * sin(cameraRotation.y),
-      dy * cos(cameraRotation.x),
-      dx * sin(cameraRotation.y) + dy * sin(cameraRotation.x) * cos(cameraRotation.y)
-    )
+    cameraTranslation.sub(createVector(dx, dy, 0).div(cameraScale));
   }
   clickPoint.set(mouseX, mouseY)
   return false;
@@ -40,9 +37,9 @@ function mouseReleased() {
 function mouseWheel(event) {
   let scaleFactor = 1.1;
   if(event.delta > 0) {
-    cameraScale /= scaleFactor;
+    cameraScale = max(0.25, cameraScale / scaleFactor);
   } else {
-    cameraScale *= scaleFactor;
+    cameraScale = min(4, cameraScale * scaleFactor);
   }
   return false;
 }

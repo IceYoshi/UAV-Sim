@@ -25,9 +25,9 @@ class DUAV extends UAV {
 
         let a = p5.Vector.angleBetween(n, v);
 
-        let nProj = cos(a) * v.mag();
+        let vProj = n.setMag(cos(a) * v.mag());
 
-        let offsetVector = v.sub(n.setMag(nProj));
+        let offsetVector = v.sub(vProj);
 
         this.applyForce(offsetVector, 0.5)
       }

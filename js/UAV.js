@@ -115,8 +115,7 @@ class UAV {
         let distance = this.distanceTo(uav);
         if(distance < this.collisionThreshold) {
           vectorSum.add(this.headingFrom(uav.actualPosition)
-            .normalize()
-            .mult(1 + (distance/this.collisionThreshold))
+            .setMag(1 + (distance/this.collisionThreshold))
           )
         }
       }
@@ -144,7 +143,7 @@ class UAV {
   }
 
   applyForce(v, w) {
-    this._cumulativeForce.add(v.normalize().mult(w || 1));
+    this._cumulativeForce.add(v.setMag(w || 1));
   }
 
   executeMovement() {
