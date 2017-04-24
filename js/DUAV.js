@@ -20,10 +20,18 @@ class DUAV extends UAV {
       let mUAV = mUAVs[0];
       if(this._oldPos) {
         // Predict mUAV heading
-        this.moveTo(mUAV.actualPosition.copy().add(mUAV.headingFrom(this._oldPos).mult(this.distanceTo(mUAV)/3)));
-      } else {
-        this.moveTo(mUAV.actualPosition);
+        let n = this.headingTo(mUAV.actualPosition);
+        let v = mUAV.headingFrom(this._oldPos);
+
+        let a = p5.Vector.angleBetween(n, v);
+
+        let nProj = cos(a) * v.mag();
+
+        let offsetVector = v.sub(n.setMag(nProj));
+
+        this.applyForce(offsetVector, 0.5)
       }
+      this.moveTo(mUAV.actualPosition);
       this._oldPos = mUAV.actualPosition;
     }
   }
