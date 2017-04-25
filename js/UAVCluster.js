@@ -8,13 +8,14 @@ class UAVCluster {
       this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
                                               random(-flightZoneSize/2, flightZoneSize/2),
                                               flightZoneSize/2)));
+
     }
     this._uavs = this._duavs.concat(this._muavs);
   }
 
   draw() {
-    for(let i = 0; i < this._uavs.length; i++) {
-      this._uavs[i].draw();
+    for(let i = 0; i < this._duavs.length; i++) {
+     this._duavs[i].draw();
     }
     this.drawLinks();
   }
@@ -36,5 +37,4 @@ class UAVCluster {
     }
     endShape();
   }
-
 }

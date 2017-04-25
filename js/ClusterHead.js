@@ -95,5 +95,4 @@ class ClusterHead{
       this.removeBranch(this.branches[i]);
     }
   }
-
 }

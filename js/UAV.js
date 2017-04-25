@@ -103,6 +103,7 @@ class UAV {
 
   performCollisionAvoidance(nearbyUAVs) {
     if(nearbyUAVs != null) {
+
       let vectorSum = createVector(0, 0, 0);
       for(var i = 0; i < nearbyUAVs.length; i++) {
         let uav = nearbyUAVs[i];
