@@ -74,11 +74,7 @@ class ClusterHead{
   }
 
   removeBranch(branchChild){
-<<<<<<< HEAD
-      if(this.hasBranch(branchHead)){
-=======
       if(this.hasBranch(branchChild)){
->>>>>>> master
         this.branches = this.branches.filter(uav => uav.id = branchChild.id);
         branchChild.didBecomeDUAV();
       }
@@ -87,8 +83,6 @@ class ClusterHead{
   hasBranch(branchHead){
     return this.branches.filter(uav => uav.id = branchHead.id).length>0;
   }
-<<<<<<< HEAD
-=======
 
   checkForDeadLinks(){
     let branches = [];
@@ -101,6 +95,4 @@ class ClusterHead{
       this.removeBranch(this.branches[i]);
     }
   }
-
->>>>>>> master
 }

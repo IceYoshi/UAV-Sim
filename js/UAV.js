@@ -53,15 +53,6 @@ class UAV {
     return this._communicationRange;
   }
 
-<<<<<<< HEAD
-  constructor(id, radius, position, color, collisionThreshold, wobblingRadius) {
-    this.id = id;
-    this.rangeRadius = 100;
-    this.radius = radius;
-    this.anchorPosition = position;
-    this.color = color;
-    this._collisionThreshold = collisionThreshold || 100;
-=======
   constructor(id, radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange) {
     this.id = id;
     this.radius = radius;
@@ -69,7 +60,6 @@ class UAV {
     this.color = color;
     this.maxSpeed = maxSpeed;
     this.collisionThreshold = collisionThreshold;
->>>>>>> master
     this.wobblingRadius = wobblingRadius;
     this.communicationRange = communicationRange;
     this._cumulativeForce = createVector(0,0,0);
@@ -111,17 +101,9 @@ class UAV {
     this._wobblingOffset.set(randomOffset.x, randomOffset.y, randomOffset.z);
   }
 
-<<<<<<< HEAD
-  getNeighbors(uavArray){
-      return uavArray.filter(uav => uav.distanceTo(this) <= this.rangeRadius);
-  }
-
-  performCollisionAvoidance(uavArray) {
-    if(uavArray != null) {
-=======
   performCollisionAvoidance(nearbyUAVs) {
     if(nearbyUAVs != null) {
->>>>>>> master
+
       let vectorSum = createVector(0, 0, 0);
       for(var i = 0; i < nearbyUAVs.length; i++) {
         let uav = nearbyUAVs[i];

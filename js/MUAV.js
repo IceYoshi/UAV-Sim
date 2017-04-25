@@ -1,11 +1,6 @@
 class MUAV extends UAV {
 
   constructor(id, radius, position) {
-<<<<<<< HEAD
-    super(id, radius, position, UAVColor.MUAV, 60, 150);
-
-    this.textWeightGraphics = createGraphics(3*radius,3*radius);
-=======
     super(
       /*id:*/ id,
       /*radius:*/ radius,
@@ -17,7 +12,7 @@ class MUAV extends UAV {
       /*communicationRange:*/ 100
     );
     this.textWeightGraphics = createGraphics(9*radius,3*radius);
->>>>>>> master
+
   }
 
   draw(){
@@ -28,14 +23,12 @@ class MUAV extends UAV {
     this.drawTexture();
     sphere(this._radius);
     pop();
-<<<<<<< HEAD
-=======
   }
 
   drawTexture(){
     this.textWeightGraphics.background(this._color);
     texture(this.textWeightGraphics);
->>>>>>> master
+
   }
 
   drawTexture(){

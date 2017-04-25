@@ -1,9 +1,6 @@
 class DUAV extends UAV {
 
   constructor(id, weight, radius, position) {
-<<<<<<< HEAD
-    super(id, radius, position, UAVColor.DUAV, 40, 25);
-=======
     super(
       /*id:*/ id,
       /*radius:*/ radius,
@@ -14,7 +11,6 @@ class DUAV extends UAV {
       /*wobblingRadius:*/ 50,
       /*communicationRange:*/ 100
     );
->>>>>>> master
 
     this.weight = weight;
     this.parent = null;
@@ -22,11 +18,8 @@ class DUAV extends UAV {
     this.minWeight = 0;
     this.maxWeight = 50;
     this.leastNumberOfChildren = 5;
-<<<<<<< HEAD
-    this.textWeightGraphics = createGraphics(3*radius,3*radius);
-=======
     this.textWeightGraphics = createGraphics(9*radius,3*radius);
->>>>>>> master
+
     this.weightStrokeColor = "black";
 
     this.clusterHead = null;
@@ -46,28 +39,6 @@ class DUAV extends UAV {
     pop();
   }
 
-<<<<<<< HEAD
-  drawOwnWeight(){
-    this.textWeightGraphics.background(this._color);
-    this.textWeightGraphics.stroke(this.weightStrokeColor);
-    this.textWeightGraphics.text(this.ownWeight, this.radius, this.radius);
-    texture(this.textWeightGraphics);
-  }
-
-  update(uavArray){
-    super.update(uavArray);
-
-    let neighbors = this.getNeighbors(uavArray);
-    this.doKhopca(neighbors);
-    this.doOwnClustering(neighbors);
-
-    /*
-     * execute as last within this clode-block!
-     * changes anchorPosition of itself, thus changes neighbors parameter of other uav's
-     */
-     this.doFlocking(neighbors);
-     this.boundWithinFlightzone();
-=======
   update(nearbyUAVs, mUAVs) {
     super.update(nearbyUAVs, mUAVs);
     this.doKhopca(nearbyUAVs);
@@ -114,7 +85,6 @@ class DUAV extends UAV {
       }
     }
 
->>>>>>> master
   }
 
   boundWithinFlightzone(){
@@ -151,8 +121,6 @@ class DUAV extends UAV {
                                             targetPos.z - this.anchorPosition.z)
                                             .normalize());
     }
-<<<<<<< HEAD
-=======
   }
 
   doOwnClustering(neighbors){
@@ -310,14 +278,13 @@ class DUAV extends UAV {
         max = neighbors[i].weight;
     }
     return max;
->>>>>>> master
   }
 
   doOwnClustering(neighbors){
     if(!this.isClusterHead()){
         if(!this.parent){
           let possibleConnections = neighbors.filter(uav => uav.shouldAcceptChildren)
-                                              /*.sort(function(u1,u2){u2.weight-u1.weight})*/
+                                              .sort(function(u1,u2){u2.weight-u1.weight})
                                               .sort(this.sortByDistance(this));
           if(possibleConnections.length>0){
             let uav = possibleConnections[0];

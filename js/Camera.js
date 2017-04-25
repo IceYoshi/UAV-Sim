@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-var cameraOffset = new p5.Vector(0,0);
-var cameraScale = 0.75;
-=======
 var cameraTranslation = new p5.Vector(0,0,0);
 var cameraRotation = new p5.Vector(0,0);
 var cameraScale = 1;
 var clickPoint = new p5.Vector(0,0)
->>>>>>> master
 function updateCamera() {
   scale(cameraScale);
   translate(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z);

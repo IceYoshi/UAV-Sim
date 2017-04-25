@@ -3,11 +3,7 @@ var flightZoneSize = 500;
 var settingsInfo;
 var wobbling = true;
 var collision = true;
-<<<<<<< HEAD
-var flightZoneSize = 500;
-=======
 var chasing = false;
->>>>>>> master
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -24,13 +20,8 @@ function initializeDOM() {
 }
 
 function initializeObjects() {
-<<<<<<< HEAD
-  drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(50, flightZoneSize, new MUAV(null,10)));
-=======
   drawManager.add(new FlightZone());
   drawManager.add(new UAVCluster(50, new MUAV(null, 10)));
->>>>>>> master
 }
 
 function draw() {
