@@ -1,7 +1,7 @@
 class FlightZone {
 
   constructor(width, height, depth) {
-    this.width = width || 500;
+    this.width = width || flightZoneSize;
     this.height = height || this.width;
     this.depth = depth || this.width;
   }
@@ -49,5 +49,6 @@ class FlightZone {
     vertex(-this.width/2, -this.height / 2, this.depth/2);
     vertex(-this.width/2, -this.height / 2, -this.depth/2);
     endShape();
+    pop();
   }
 }

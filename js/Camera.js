@@ -1,34 +1,45 @@
-var cameraOffset = new p5.Vector(0,0);
+var cameraTranslation = new p5.Vector(0,0,0);
+var cameraRotation = new p5.Vector(0,0);
 var cameraScale = 1;
+var clickPoint = new p5.Vector(0,0)
 function updateCamera() {
-  let dampingFactor = 0.005;
-  rotateX((dragDistance.x + cameraOffset.x) * dampingFactor);
-  rotateY((dragDistance.y + cameraOffset.y) * dampingFactor);
   scale(cameraScale);
-  camera(0, 0, 0);
+  translate(cameraTranslation.x, cameraTranslation.y, cameraTranslation.z);
+  rotateX(cameraRotation.x);
+  rotateY(cameraRotation.y);
+  camera(0,0,0);
 }
 
-var clickPoint = new p5.Vector(0,0);
 function mousePressed() {
-  clickPoint.set(mouseX, mouseY);
+  clickPoint.set(mouseX, mouseY)
+  return false;
 }
 
-var dragDistance = new p5.Vector(0,0);
 function mouseDragged() {
-  dragDistance.set(mouseY - clickPoint.y, mouseX - clickPoint.x);
+  let dx = clickPoint.x - mouseX;
+  let dy = clickPoint.y - mouseY
+  if(mouseButton == LEFT) {
+    let cameraRotationDampingFactor = 0.005;
+    cameraRotation.sub(
+      createVector(dy, dx).mult(cameraRotationDampingFactor)
+    )
+  } else if(mouseButton == RIGHT) {
+    cameraTranslation.sub(createVector(dx, dy, 0).div(cameraScale));
+  }
+  clickPoint.set(mouseX, mouseY)
+  return false;
 }
 
 function mouseReleased() {
-  cameraOffset.add(dragDistance);
-  dragDistance.set(0,0);
+  return false;
 }
 
 function mouseWheel(event) {
   let scaleFactor = 1.1;
   if(event.delta > 0) {
-    cameraScale /= scaleFactor;
+    cameraScale = max(0.25, cameraScale / scaleFactor);
   } else {
-    cameraScale *= scaleFactor;
+    cameraScale = min(4, cameraScale * scaleFactor);
   }
-  return false; // Prevent page from scrolling
+  return false;
 }
