@@ -1,8 +1,32 @@
 class MUAV extends UAV {
 
-  constructor(radius, position) {
-    // radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange
-    super(radius, position, 'red', 0.8, 80, 200, flightZoneSize/5);
+  constructor(id, radius, position) {
+    super(
+      /*id:*/ id,
+      /*radius:*/ radius,
+      /*position:*/ position,
+      /*color:*/ UAVColor.MUAV,
+      /*maxSpeed:*/ 0.8,
+      /*collisionThreshold:*/ 60,
+      /*wobblingRadius:*/ 150,
+      /*communicationRange:*/ 100
+    );
+    this.textWeightGraphics = createGraphics(9*radius,3*radius);
+  }
+
+  draw(){
+    let pos = this.actualPosition;
+    push();
+    translate(pos.x, pos.y, pos.z);
+    fill(this._color);
+    this.drawTexture();
+    sphere(this._radius);
+    pop();
+  }
+
+  drawTexture(){
+    this.textWeightGraphics.background(this._color);
+    texture(this.textWeightGraphics);
   }
 
 }

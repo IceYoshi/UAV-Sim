@@ -53,7 +53,8 @@ class UAV {
     return this._communicationRange;
   }
 
-  constructor(radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange) {
+  constructor(id, radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange) {
+    this.id = id;
     this.radius = radius;
     this.anchorPosition = position;
     this.color = color;
@@ -87,13 +88,6 @@ class UAV {
     if(collision) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
 
     this.executeMovement();
-
-    let pos = this.actualPosition;
-    let offset = this instanceof DUAV ? 0 : flightZoneSize/5;
-    let cx = constrain(pos.x, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
-    let cy = constrain(pos.y, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
-    let cz = constrain(pos.z, -flightZoneSize/2 - offset, flightZoneSize/2 + offset);
-    this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 
   updateWobblingOffset() {

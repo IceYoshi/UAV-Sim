@@ -5,9 +5,9 @@ class UAVCluster {
     this._muavs = [muav];
     let uav_radius = 10;
     for(var i = 0; i < count; i++) {
-      this._duavs.push(new DUAV(i, uav_radius, createVector(-flightZoneSize/2,
+      this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
                                               random(-flightZoneSize/2, flightZoneSize/2),
-                                              random(-flightZoneSize/2, flightZoneSize/2))));
+                                              flightZoneSize/2)));
     }
     this._uavs = this._duavs.concat(this._muavs);
   }
@@ -16,6 +16,7 @@ class UAVCluster {
     for(let i = 0; i < this._uavs.length; i++) {
       this._uavs[i].draw();
     }
+    this.drawLinks();
   }
 
   update() {
@@ -24,6 +25,16 @@ class UAVCluster {
         uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._uavs[i].communicationRange
       ), this._muavs);
     }
+  }
+
+  drawLinks(){
+    beginShape(LINES);
+    fill(0);  stroke(1);
+    for(let i = 0; i < this._duavs.length; ++i) {
+        let current_duav = this._duavs[i];
+        current_duav.drawCluster();
+    }
+    endShape();
   }
 
 }
