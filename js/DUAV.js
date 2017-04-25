@@ -91,7 +91,7 @@ class DUAV extends UAV {
     if(!this.isClusterHead()){
         if(!this.parent){
           let possibleConnections = neighbors.filter(uav => uav.shouldAcceptChildren)
-                                              .sort(function(u1,u2){u2.weight-u1.weight})
+                                              /*.sort(function(u1,u2){u2.weight-u1.weight})*/
                                               .sort(this.sortByDistance(this));
           if(possibleConnections.length>0){
             let uav = possibleConnections[0];
