@@ -74,7 +74,11 @@ class ClusterHead{
   }
 
   removeBranch(branchChild){
+<<<<<<< HEAD
       if(this.hasBranch(branchHead)){
+=======
+      if(this.hasBranch(branchChild)){
+>>>>>>> master
         this.branches = this.branches.filter(uav => uav.id = branchChild.id);
         branchChild.didBecomeDUAV();
       }
@@ -83,4 +87,20 @@ class ClusterHead{
   hasBranch(branchHead){
     return this.branches.filter(uav => uav.id = branchHead.id).length>0;
   }
+<<<<<<< HEAD
+=======
+
+  checkForDeadLinks(){
+    let branches = [];
+    for(let i=0; i<this.branches.length;++i){
+      if(this.uav.distanceTo(this.branches[i]) > this.uav._communicationRange){
+        branches.push(this.branches[i]);
+      }
+    }
+    for(let i=0; i<branches.length;++i){
+      this.removeBranch(this.branches[i]);
+    }
+  }
+
+>>>>>>> master
 }

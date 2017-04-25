@@ -1,5 +1,6 @@
 class UAVCluster {
 
+<<<<<<< HEAD
   constructor(count, flightZoneSize, muav) {
     this._duavs = [];
     this._muavs = [muav];
@@ -9,6 +10,16 @@ class UAVCluster {
                                                               random(-flightZoneSize/2, flightZoneSize/2),
                                                               (-flightZoneSize/2, flightZoneSize/2)
                                                         )));
+=======
+  constructor(count, muav) {
+    this._duavs = [];
+    this._muavs = [muav];
+    let uav_radius = 10;
+    for(var i = 0; i < count; i++) {
+      this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
+                                              random(-flightZoneSize/2, flightZoneSize/2),
+                                              flightZoneSize/2)));
+>>>>>>> master
     }
     this._uavs = this._duavs.concat(this._muavs);
   }
@@ -17,6 +28,7 @@ class UAVCluster {
     for(let i = 0; i < this._duavs.length; i++) {
      this._duavs[i].draw();
     }
+<<<<<<< HEAD
     for(let i = 0; i < this._muavs.length; i++) {
      this._muavs[i].draw();
     }
@@ -29,6 +41,16 @@ class UAVCluster {
     }
     for(let i = 0; i < this._muavs.length; i++) {
       this._muavs[i].update(this._uavs.filter(uav => uav != this._uavs[i]));
+=======
+    this.drawLinks();
+  }
+
+  update() {
+    for(let i = 0; i < this._uavs.length; i++) {
+      this._uavs[i].update(this._uavs.filter(uav =>
+        uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._uavs[i].communicationRange
+      ), this._muavs);
+>>>>>>> master
     }
   }
 
@@ -41,4 +63,8 @@ class UAVCluster {
     }
     endShape();
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 }

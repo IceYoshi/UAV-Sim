@@ -1,7 +1,20 @@
 class DUAV extends UAV {
 
   constructor(id, weight, radius, position) {
+<<<<<<< HEAD
     super(id, radius, position, UAVColor.DUAV, 40, 25);
+=======
+    super(
+      /*id:*/ id,
+      /*radius:*/ radius,
+      /*position:*/ position,
+      /*color:*/ UAVColor.DUAV,
+      /*maxSpeed:*/ 0.8,
+      /*collisionThreshold:*/ 40,
+      /*wobblingRadius:*/ 50,
+      /*communicationRange:*/ 100
+    );
+>>>>>>> master
 
     this.weight = weight;
     this.parent = null;
@@ -9,7 +22,11 @@ class DUAV extends UAV {
     this.minWeight = 0;
     this.maxWeight = 50;
     this.leastNumberOfChildren = 5;
+<<<<<<< HEAD
     this.textWeightGraphics = createGraphics(3*radius,3*radius);
+=======
+    this.textWeightGraphics = createGraphics(9*radius,3*radius);
+>>>>>>> master
     this.weightStrokeColor = "black";
 
     this.clusterHead = null;
@@ -29,6 +46,7 @@ class DUAV extends UAV {
     pop();
   }
 
+<<<<<<< HEAD
   drawOwnWeight(){
     this.textWeightGraphics.background(this._color);
     this.textWeightGraphics.stroke(this.weightStrokeColor);
@@ -49,6 +67,54 @@ class DUAV extends UAV {
      */
      this.doFlocking(neighbors);
      this.boundWithinFlightzone();
+=======
+  update(nearbyUAVs, mUAVs) {
+    super.update(nearbyUAVs, mUAVs);
+    this.doKhopca(nearbyUAVs);
+    this.doOwnClustering(nearbyUAVs);
+    this.doFlocking(nearbyUAVs);
+    //this.checkForDeadLinks();
+
+    /*
+     * execute as last within this clode-block!
+     * changes anchorPosition of itself, thus changes neighbors parameter of other uav's
+    */
+
+    this.chase(mUAVs);
+
+    this.boundWithinFlightzone();
+  }
+
+  drawOwnWeight(){
+    this.textWeightGraphics.background(this._color);
+    this.textWeightGraphics.stroke(this.weightStrokeColor);
+    this.textWeightGraphics.text(`${this.ownWeight}         ${this.ownWeight}         ${this.ownWeight}`, this.radius, 2 * this.radius);
+    texture(this.textWeightGraphics);
+  }
+
+  chase(mUAVs) {
+    if(chasing && this.isClusterHead()) {
+      if(mUAVs && mUAVs.length > 0) {
+        let mUAV = mUAVs[0];
+        if(this._oldPos) {
+          // Predict mUAV heading
+          let n = this.headingTo(mUAV.actualPosition);
+          let v = mUAV.headingFrom(this._oldPos);
+
+          let a = p5.Vector.angleBetween(n, v);
+
+          let vProj = n.setMag(cos(a) * v.mag());
+
+          let offsetVector = v.sub(vProj);
+
+          this.applyForce(offsetVector, 0.5);
+        }
+        this.moveTo(mUAV.actualPosition);
+        this._oldPos = mUAV.actualPosition;
+      }
+    }
+
+>>>>>>> master
   }
 
   boundWithinFlightzone(){
@@ -85,6 +151,166 @@ class DUAV extends UAV {
                                             targetPos.z - this.anchorPosition.z)
                                             .normalize());
     }
+<<<<<<< HEAD
+=======
+  }
+
+  doOwnClustering(neighbors){
+    if(!this.isClusterHead()){
+        if(!this.parent){
+          let possibleConnections = neighbors.filter(uav => uav.shouldAcceptChildren)
+                                              .sort(this.sortByDistance(this));
+          if(possibleConnections.length>0){
+            let uav = possibleConnections[0];
+            if(uav.childDidAskForConnection(this))  uav.appendChild(this);
+          }
+        }
+    }
+  }
+
+  sortByDistance(refUav) {
+      return function(uav1, uav2) {
+          return refUav.distanceTo(uav2) - refUav.distanceTo(uav1);
+      }
+  }
+
+  doKhopca(neighbors){
+    this.rule1(neighbors);
+    this.rule2(neighbors);
+    this.rule3(neighbors);
+    this.rule4(neighbors);
+  }
+
+  appendChild(uav){
+      if(this.isClusterHead())  this.clusterHead.appendChild(uav);
+      else{
+        this.child = uav;
+        uav.parent = this;
+        uav.ownWeight = this.ownWeight+1;
+        uav.shouldFlock = false;
+        this.shouldAcceptChildren = uav.shouldAcceptChildren = false;
+        uav._color = this._color;
+        this.didGetNewChild();
+      }
+  }
+
+  startAcceptingNewLeaf(){
+    if(this.child){
+      this.child.startAcceptingNewLeaf();
+    }
+    else{ // leaf
+      this.shouldAcceptChildren = true;
+    }
+  }
+
+  didGetNewChild(){
+    if(this.parent){
+      this.parent.didGetNewChild();
+      return;
+    }
+    // from here: CH
+    if(this.isClusterHead()){
+      this.clusterHead.didGetNewChild();
+    }
+  }
+
+  checkForDeadLinks(){
+    if(this.isClusterHead()) {
+      this.clusterHead.checkForDeadLinks();
+    } else if(this.child){
+      if(this.distanceTo(this.child) > this._communicationRange){
+        this.removeChild();
+      }
+    }
+  }
+
+  removeChild(){
+    if(this.child){
+      this.child.didBecomeDUAV();
+      this.child = null;
+    }
+  }
+
+  didBecomeClusterHead(neighbors){
+    this.clusterHead = new ClusterHead(this);
+    this.weightStrokeColor = "white";
+  }
+
+  didBecomeDUAV(){
+    if(this.isClusterHead()){
+      this.clusterHead.willBecomeDUAV();
+      this.clusterHead = null;
+    }
+    this.ownWeight = 0;
+    this.shouldAcceptChildren = false;
+    this.shouldFlock = true;
+    this._color = UAVColor.DUAV;
+    this.parent = null;
+    if(this.child) this.child.didBecomeDUAV();
+    this.child = null;
+    this.weightStrokeColor = "black";
+  }
+
+  childDidAskForConnection(child){
+    if(this.isClusterHead()) return this.clusterHead.childDidAskForConnection(child);
+    return this.shouldAcceptChildren;
+  }
+
+  rule1(neighbors){
+    let maxW = this.maxWeightofNeighborhood(neighbors);
+    if(maxW>=this.minWeight){
+      let rule1Neighbors = neighbors.filter(uav => uav.weight == maxW);
+      let wasCH = this.isClusterHead();
+      if(maxW > this.weight){
+        this.weight = max([this.minWeight,maxW-1]);
+
+        if(wasCH) this.didBecomeDUAV();
+      }
+    }
+  }
+
+  rule2(neighbors){
+    if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
+        // from here: Cluster Head!
+        this.weight = this.maxWeight;
+        this._color = UAVColor.CLUSTER_HEAD;
+        this.didBecomeClusterHead(neighbors);
+    }
+  }
+
+  rule3(neighbors){
+    let maxW = this.maxWeightofNeighborhood(neighbors);
+    if(maxW>=this.minWeight){
+      let wasCH = this.isClusterHead();
+      if(maxW>this.minWeight-1 && maxW <= this.weight && this.weight != this.maxWeight){
+        this.weight -= 1;
+        if(wasCH) this.didBecomeDUAV();
+      }
+    }
+  }
+
+  rule4(neighbors){
+    let maxW = this.maxWeightofNeighborhood(neighbors);
+    if(maxW>=this.minWeight){
+      let wasCH = this.isClusterHead();
+
+      if(maxW == this.maxWeight && this.weight == this.maxWeight){
+        this.weight = random(this.weight, maxW);
+        this.weight -= 1;
+        if(wasCH) this.didBecomeDUAV();
+      }
+    }
+  }
+
+  maxWeightofNeighborhood(neighbors){
+    if(neighbors.length==0) return this.minWeight-1;
+    let max = neighbors[0].weight;
+    for(let i=1; i<neighbors.length;++i){
+      if(neighbors[i].weight > max)
+        max = neighbors[i].weight;
+    }
+    return max;
+>>>>>>> master
   }
 
   doOwnClustering(neighbors){
