@@ -22,7 +22,7 @@ function setup() {
 function initializeDOM() {
   let padding = 10
 
-  velocitySlider = createSlider(1, 5, 1, 1);
+  velocitySlider = createSlider(1, 10, 1, 1);
   velocitySlider.style(`position: absolute; bottom: ${padding}; left: ${padding};`);
   velocitySlider.attribute('onmouseenter', 'cameraControlEnabled = false;');
   velocitySlider.attribute('onmouseleave', 'cameraControlEnabled = true;');
@@ -36,7 +36,7 @@ function initializeDOM() {
 
 function initializeObjects() {
   drawManager.add(new FlightZone());
-  drawManager.add(new UAVCluster(50, new MUAV(null, 10)));
+  drawManager.add(new UAVManager(50, new MUAV(null, 10)));
 }
 
 function draw() {
