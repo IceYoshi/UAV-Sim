@@ -1,9 +1,15 @@
 var drawManager = new DrawManager();
+
+// Global simulation settings
 var flightZoneSize = 500;
-var settingsInfo;
 var wobbling = true;
 var collision = true;
 var chasing = false;
+
+// DOM objects
+var velocitySlider;
+var settingsInfo;
+var cameraControlEnabled = true
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -14,8 +20,17 @@ function setup() {
 }
 
 function initializeDOM() {
+  let padding = 10
+
+  velocitySlider = createSlider(1, 5, 1, 1);
+  velocitySlider.style(`position: absolute; bottom: ${padding}; left: ${padding};`);
+  velocitySlider.attribute('onmouseenter', 'cameraControlEnabled = false;');
+  velocitySlider.attribute('onmouseleave', 'cameraControlEnabled = true;');
+  velocitySlider.attribute('oninput', 'updateSettingsInfo();');
+
   settingsInfo = createDiv();
-  settingsInfo.style("position: absolute; bottom: 10; left: 10;");
+  settingsInfo.style(`position: absolute; bottom: ${padding}; left: ${2 * padding + velocitySlider.width};`);
+
   updateSettingsInfo();
 }
 
@@ -65,5 +80,5 @@ function keyPressed(e) {
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing}`);
+  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing}`);
 }

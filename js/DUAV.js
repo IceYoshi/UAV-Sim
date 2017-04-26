@@ -44,14 +44,7 @@ class DUAV extends UAV {
     this.doOwnClustering(nearbyUAVs);
     this.doFlocking(nearbyUAVs);
     //this.checkForDeadLinks();
-
-    /*
-     * execute as last within this clode-block!
-     * changes anchorPosition of itself, thus changes neighbors parameter of other uav's
-    */
-
-    this.chase(mUAVs);
-
+    this.doChase(mUAVs);
     this.boundWithinFlightzone();
   }
 
@@ -62,7 +55,7 @@ class DUAV extends UAV {
     texture(this.textWeightGraphics);
   }
 
-  chase(mUAVs) {
+  doChase(mUAVs) {
     if(chasing && this.isClusterHead()) {
       if(mUAVs && mUAVs.length > 0) {
         let mUAV = mUAVs[0];
@@ -83,7 +76,6 @@ class DUAV extends UAV {
         this._oldPos = mUAV.actualPosition;
       }
     }
-
   }
 
   boundWithinFlightzone(){
