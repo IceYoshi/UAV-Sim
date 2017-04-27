@@ -1,13 +1,9 @@
 var drawManager = new DrawManager();
+var flightZoneSize = 500;
 var settingsInfo;
 var wobbling = true;
 var collision = true;
-var formation = false;
-
-/*var uavTexture = null;
-function preload() {
-  uavTexture = loadImage("./assets/wheatley.png");
-}*/
+var chasing = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -24,15 +20,13 @@ function initializeDOM() {
 }
 
 function initializeObjects() {
-  let flightZoneSize = 500;
-
-  drawManager.add(new FlightZone(flightZoneSize));
-  drawManager.add(new UAVCluster(25, flightZoneSize, new MUAV(-1, 10)));
+  drawManager.add(new FlightZone());
+  drawManager.add(new UAVCluster(5, new MUAV(null, 10)));
 }
 
 function draw() {
   updateCamera();
-  background("#e7e7e7");
+  background(UAVColor.FLIGHTZONE);
   drawManager.draw();
 }
 
@@ -47,9 +41,13 @@ function keyPressed(e) {
       // Pause object updates. Draw calls are unaffected
       drawManager.paused = !drawManager.paused;
       break;
-    case 67: // Key: c
+    case 65: // Key: a
       // Toggle UAV collision avoidance
       collision = !collision;
+      break;
+    case 67: // Key: c
+      // Toggle chasing phase
+      chasing = !chasing;
       break;
     case 82: // Key: r
       // Reset canvas
@@ -62,14 +60,10 @@ function keyPressed(e) {
       // Toggle UAV wobbling
       wobbling = !wobbling;
       break;
-    case 70: // Key: f
-      formation = !formation;
-      break;
   }
   updateSettingsInfo();
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} |
-   <b>C</b>ollisions: ${collision} | <b>F</b>ormation: ${formation}`);
+  settingsInfo.html(`Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing}`);
 }

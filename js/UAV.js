@@ -34,24 +34,36 @@ class UAV {
   get actualPosition() {
     return p5.Vector.add(this._anchorPosition, this._wobblingOffset);
   }
-  get isClusterHead() {
-    return this._isClusterHead;
+  set maxSpeed(value) {
+    this._maxSpeed = Math.max(0, value || 1);
   }
-  set isClusterHead(value) {
-    this._isClusterHead = value;
+  get maxSpeed() {
+    return this._maxSpeed;
   }
-  get uavID() {
-    return this._uavID;
+  set collisionThreshold(value) {
+    this._collisionThreshold = Math.max(0, value || 50);
+  }
+  get collisionThreshold() {
+    return this._collisionThreshold;
+  }
+  set communicationRange(value) {
+    this._communicationRange = Math.max(0, value || 0);
+  }
+  get communicationRange() {
+    return this._communicationRange;
   }
 
-constructor(uavID, radius, position, isClusterHead, color, collisionThreshold, wobblingRadius) {
-    this._uavID = uavID;
+  constructor(id, radius, position, color, maxSpeed, collisionThreshold, wobblingRadius, communicationRange) {
+    this.id = id;
     this.radius = radius;
     this.anchorPosition = position;
-    this.isClusterHead = isClusterHead;
     this.color = color;
-    this._collisionThreshold = collisionThreshold || 50;
+    this.maxSpeed = maxSpeed;
+    this.collisionThreshold = collisionThreshold;
     this.wobblingRadius = wobblingRadius;
+    this.communicationRange = communicationRange;
+    this._cumulativeForce = createVector(0,0,0);
+
     this._wobblingOffset = createVector(0,0,0);
     this._noiseSeed = {
       "x": random(1000),
@@ -60,9 +72,6 @@ constructor(uavID, radius, position, isClusterHead, color, collisionThreshold, w
     };
     this._noiseOffset = random(1000);
     this.updateWobblingOffset();
-
-    this._distanceToClusterHead = 0;
-    this._uavDistanceArray = [];
   }
 
   draw() {
@@ -74,87 +83,37 @@ constructor(uavID, radius, position, isClusterHead, color, collisionThreshold, w
     pop();
   }
 
-  update(uavArray) {
+  update(nearbyUAVs, mUAVs) {
     if(wobbling) this.updateWobblingOffset();
-    if(collision) this.performCollisionAvoidance(uavArray);
-    if(formation) this.performClusterFormation(uavArray);
+    if(collision) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
+
+    this.executeMovement();
   }
 
   updateWobblingOffset() {
     let randomOffset = new Object();
 
     for(const key of Object.keys(this._noiseSeed)) {
-      randomOffset[key] = this._wobblingRadius * (noise(this._noiseOffset + this._noiseSeed[key]) - 0.5);
+      randomOffset[key] = this.wobblingRadius * (noise(this._noiseOffset + this._noiseSeed[key]) - 0.5);
     }
-    this._noiseOffset += 0.01;
+    this._noiseOffset += 0.005;
 
     this._wobblingOffset.set(randomOffset.x, randomOffset.y, randomOffset.z);
   }
 
-  performCollisionAvoidance(uavArray) {
-    if(uavArray != null) {
+  performCollisionAvoidance(nearbyUAVs) {
+    if(nearbyUAVs != null) {
       let vectorSum = createVector(0, 0, 0);
-      for(var i = 0; i < uavArray.length; i++) {
-        let uav = uavArray[i];
+      for(var i = 0; i < nearbyUAVs.length; i++) {
+        let uav = nearbyUAVs[i];
         let distance = this.distanceTo(uav);
-        if(distance < this._collisionThreshold) {
-          let pos = this.actualPosition;
-          let pos2 = uav.actualPosition;
-          vectorSum.add(createVector(pos.x - pos2.x, pos.y - pos2.y, pos.z - pos2.z)
-            .normalize()
-            .mult(this._collisionThreshold + 10 - distance)
-            .div(50));
+        if(distance < this.collisionThreshold) {
+          vectorSum.add(this.headingFrom(uav.actualPosition)
+            .setMag(1 + (distance/this.collisionThreshold))
+          )
         }
       }
-      this.anchorPosition.add(vectorSum);
-    }
-  }
-
-  performClusterFormation(uavArray) {
-    let targetReached = true;
-    let numClusterMembers = 4;
-    if(uavArray != null) {
-      if(this.isClusterHead) {
-        this.color = 'yellow';
-        for(var i = 0; i < uavArray.length; i++) {
-          let uav = uavArray[i];
-          if(uav.color != 'red'){
-            uav.color = 'green';
-          }          
-          if(uav._uavID > this._uavID) {
-            if(this._uavDistanceArray.length == uavArray.length - 1) {
-              if(this.distanceTo(uav) - this._uavDistanceArray[uav._uavID - 1] > this.collisionThreshold){
-                this._uavDistanceArray[uav._uavID - 1] = this.distanceTo(uav);
-              }
-            }
-            else {
-              this._uavDistanceArray[uav._uavID - 1] = this.distanceTo(uav);
-            }
-          }
-        }
-        let tempDistanceArray = Array.from(this._uavDistanceArray).sort(function(a, b) {return a - b;});
-        for(var j = 0; j < numClusterMembers; j++) {
-          let distance = tempDistanceArray[j];
-          for(var k = 0; k < this._uavDistanceArray.length; k++) {
-            if(this._uavDistanceArray[k] == distance) {
-              let curUavID = k + 1;
-              uavArray[curUavID].color = 'blue';
-
-              let curPos = uavArray[curUavID].anchorPosition;
-              let clusterHeadPos = this.anchorPosition;
-              let targetPos = createVector(clusterHeadPos.x + this.collisionThreshold,
-                clusterHeadPos.y + Math.pow(-1, ~~(j * 0.5)) * this.collisionThreshold, clusterHeadPos.z + Math.pow(-1, j) * this.collisionThreshold);
-
-                if(this.distanceBetween(curPos, targetPos) > 0.5) {
-                  targetReached = false;
-                  let dir = createVector(targetPos.x - curPos.x, targetPos.y - curPos.y, targetPos.z - curPos.z)
-                  uavArray[curUavID].anchorPosition.add(dir.normalize());
-                }
-              }
-            }
-        }
-        if(targetReached) formation = false;
-      }
+      this.applyForce(vectorSum);
     }
   }
 
@@ -163,7 +122,27 @@ constructor(uavID, radius, position, isClusterHead, color, collisionThreshold, w
     let pos2 = uav.actualPosition;
     return dist(pos.x, pos.y, pos.z, pos2.x, pos2.y, pos2.z);
   }
-  distanceBetween(curPos, targetPos) {
-    return dist(curPos.x, curPos.y, curPos.z, targetPos.x, targetPos.y, targetPos.z);
+
+  headingTo(pos) {
+    let p = this.actualPosition;
+    return createVector(pos.x - p.x, pos.y - p.y, pos.z - p.z);
   }
+
+  headingFrom(pos) {
+    return this.headingTo(pos).mult(-1);
+  }
+
+  moveTo(pos) {
+    this.applyForce(this.headingTo(pos));
+  }
+
+  applyForce(v, w) {
+    this._cumulativeForce.add(v.setMag(w || 1));
+  }
+
+  executeMovement() {
+    this.anchorPosition.add(this._cumulativeForce.limit(this.maxSpeed));
+    this._cumulativeForce.set(0,0,0);
+  }
+
 }
