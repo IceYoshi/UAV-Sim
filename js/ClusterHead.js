@@ -2,8 +2,11 @@ class ClusterHead{
   constructor(uav){
     this.uav = uav;
     this.nrOfBranches = 4;
-    this.nrOfIncomingMsg = 0;
+    //this.nrOfIncomingMsg = 0; // Not needed anymore
     this.branches = [];
+    for(let i = 0; i < this.nrOfBranches; i++) {
+      this.branches.push(new UAVBranch(UAVColor.BRANCH_COLOR[i % UAVColor.BRANCH_COLOR.length]));
+    }
     uav.shouldAcceptChildren = true;
     uav.ownWeight = 0;
 
@@ -13,8 +16,9 @@ class ClusterHead{
 
   draw(){
     var head = this.uav;
-    for(let i=0; i<this.branches.length; ++i){
-      var child = this.branches[i];
+    let branches = this.getOccupiedBranches();
+    for(let i=0; i<branches.length; ++i){
+      var child = branches[i].head;
       while(head && child){
         push();
           let pos1 = head.actualPosition;
@@ -29,11 +33,33 @@ class ClusterHead{
     }
   }
 
-  clearBranches(){
-    for(let i=0; i<this.branches.length; ++i)
-      this.branches[i].didBecomeDUAV();
+  getOccupiedBranches() {
+    return this.branches.filter(branch => branch.head);
+  }
 
-    this.branches = [];
+  getFreeBranches() {
+    return this.branches.filter(branch => !branch.head);
+  }
+
+  getNumberOfOccupiedBranches() {
+    return this.getOccupiedBranches().length;
+  }
+
+  getBranchOfHead(head) {
+    let branch = this.getOccupiedBranches().filter(branch => branch.head.id == head.id);
+    return branch.length > 0 ? branch[0] : null;
+  }
+
+  hasBranch(head){
+    return this.getBranchOfHead(head) != null;
+  }
+
+  clearBranches(){
+    let branches = this.getOccupiedBranches();
+    for(let i=0; i<branches.length; ++i) {
+      branches[i].head.didBecomeDUAV();
+      branches[i].head = null;
+    }
   }
 
   willBecomeDUAV(){
@@ -41,58 +67,94 @@ class ClusterHead{
   }
 
   childDidAskForConnection(child){
-    return this.branches.length<this.nrOfBranches;
+    return this.getNumberOfOccupiedBranches()<this.nrOfBranches;
   }
 
   appendChild(child){
-    this.branches.push(child);
+    let branch = this.getFreeBranches()[0];
+    branch.head = child;
+    child._color = branch.color;
     child.parent = this.uav;
     child.ownWeight = this.uav.ownWeight+1;
     this.uav.shouldFlock = child.shouldFlock = false;
-    if(this.branches.length==this.nrOfBranches && this.uav.shouldAcceptChildren){
+    let branches = this.getOccupiedBranches();
+    if(branches.length == this.nrOfBranches && this.uav.shouldAcceptChildren){
         this.uav.shouldAcceptChildren = false;
-
-        for(let i=0; i<this.branches.length; ++i){
-          this.branches[i].shouldAcceptChildren = true;
-        }
+        this.startAcceptingAdditionalLeaf();
     }
-    child._color = UAVColor.BRANCH_COLOR[this.branches.length%this.nrOfBranches];
   }
 
-  didGetNewChild(){
-    if(++this.nrOfIncomingMsg == this.branches.length){
+  didGetNewChild(branchhead){
+    let branch = this.getBranchOfHead(branchhead);
+    if(branch) {
+      branch.length++;
       this.startAcceptingAdditionalLeaf();
-      this.nrOfIncomingMsg = 0;
     }
   }
 
   startAcceptingAdditionalLeaf(){
-    for(let i=0; i<this.branches.length;++i){
-        let branch = this.branches[i];
-        branch.startAcceptingNewLeaf();
+    let branches = this.getOccupiedBranches();
+    if(branches.length == this.nrOfBranches) {
+      let minBranchLength = min(branches.map(branch => branch.length));
+      for(let i=0; i<branches.length; ++i){
+        if(branches[i].length == minBranchLength) {
+          branches[i].head.startAcceptingNewLeaf();
+        }
+      }
+    }
+  }
+
+  stopAcceptingAdditionalLeaf(){
+    let branches = this.getOccupiedBranches();
+    for(let i=0; i<branches.length; ++i){
+      branches[i].head.stopAcceptingNewLeaf();
     }
   }
 
   removeBranch(branchChild){
-      if(this.hasBranch(branchChild)){
-        this.branches = this.branches.filter(uav => uav.id = branchChild.id);
-        branchChild.didBecomeDUAV();
+    let branch = this.getBranchOfHead(branchChild);
+    if(branch) {
+      branch.head.didBecomeDUAV();
+      branch.head = null;
+
+      if(this.getNumberOfOccupiedBranches() == 0) {
+        this.uav.khopca.weight = this.uav.khopca.maxWeight - 1;
+        this.uav.didBecomeDUAV();
+      } else {
+        this.stopAcceptingAdditionalLeaf();
+        this.balanceCluster();
+        this.uav.shouldAcceptChildren = true;
       }
+    }
   }
 
-  hasBranch(branchHead){
-    return this.branches.filter(uav => uav.id = branchHead.id).length>0;
+  didLoseChild(branchChild, weight) {
+    let branch = this.getBranchOfHead(branchChild);
+    if(branch) {
+      branch.length = weight;
+      this.stopAcceptingAdditionalLeaf();
+      this.balanceCluster();
+      this.startAcceptingAdditionalLeaf();
+    }
+  }
+
+  balanceCluster() {
+    let branches = this.getOccupiedBranches();
+    let minBranchLength = min(this.branches.map(branch => branch._length));
+    for(let i=0; i<branches.length; ++i){
+      if(branches[i].length > minBranchLength + 1) {
+        branches[i].head.removeChildAt(minBranchLength + 2);
+        branches[i].length = minBranchLength + 1;
+      }
+    }
   }
 
   checkForDeadLinks(){
-    let branches = [];
-    for(let i=0; i<this.branches.length;++i){
-      if(this.uav.distanceTo(this.branches[i]) > this.uav._communicationRange){
-        branches.push(this.branches[i]);
+    let branches = this.getOccupiedBranches();
+    for(let i = 0; i < branches.length; i++) {
+      if(this.uav.distanceTo(branches[i].head) > this.uav._communicationRange){
+        this.removeBranch(branches[i].head);
       }
-    }
-    for(let i=0; i<branches.length;++i){
-      this.removeBranch(this.branches[i]);
     }
   }
 

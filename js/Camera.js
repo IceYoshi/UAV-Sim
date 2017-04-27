@@ -11,28 +11,28 @@ function updateCamera() {
 }
 
 function mousePressed() {
-  clickPoint.set(mouseX, mouseY)
-  return false;
+  if(cameraControlEnabled) {
+    clickPoint.set(mouseX, mouseY);
+  }
 }
 
 function mouseDragged() {
-  let dx = clickPoint.x - mouseX;
-  let dy = clickPoint.y - mouseY
-  if(mouseButton == LEFT) {
-    let cameraRotationDampingFactor = 0.005;
-    cameraRotation.sub(
-      createVector(dy, dx).mult(cameraRotationDampingFactor)
-    )
-  } else if(mouseButton == RIGHT) {
-    cameraTranslation.sub(createVector(dx, dy, 0).div(cameraScale));
+  if(cameraControlEnabled) {
+    let dx = clickPoint.x - mouseX;
+    let dy = clickPoint.y - mouseY;
+    if(mouseButton == LEFT) {
+      let cameraRotationDampingFactor = 0.005;
+      cameraRotation.sub(
+        createVector(dy, dx).mult(cameraRotationDampingFactor)
+      );
+    } else if(mouseButton == RIGHT) {
+      cameraTranslation.sub(createVector(dx, dy, 0).div(cameraScale));
+    }
+    clickPoint.set(mouseX, mouseY);
   }
-  clickPoint.set(mouseX, mouseY)
-  return false;
 }
 
-function mouseReleased() {
-  return false;
-}
+function mouseReleased() {}
 
 function mouseWheel(event) {
   let scaleFactor = 1.1;
