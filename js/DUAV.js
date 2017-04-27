@@ -37,7 +37,7 @@ class DUAV extends UAV {
   update(nearbyUAVs, mUAVs) {
     this.boundWithinFlightzone();
 
-    this.khopca.execute(nearbyUAVs);
+    this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
     this.doFlocking(nearbyUAVs);
     this.checkForDeadLinks();
@@ -50,7 +50,7 @@ class DUAV extends UAV {
   drawOwnWeight(){
     this.textWeightGraphics.background(this._color);
     this.textWeightGraphics.stroke(this.weightStrokeColor);
-    this.textWeightGraphics.text(`${this.khopca.weight}         >${this.id}<         ${this.khopca.weight}`, this.radius, 2 * this.radius);
+    this.textWeightGraphics.text(`${this.ownWeight}         ${this.ownWeight}         ${this.ownWeight}`, this.radius, 2 * this.radius);
     texture(this.textWeightGraphics);
   }
 
@@ -90,7 +90,6 @@ class DUAV extends UAV {
   }
 
   isClusterHead(){
-    //return this.khopca.weight == this.khopca.maxWeight;
     return this.clusterHead != null;
   }
 
@@ -137,6 +136,7 @@ class DUAV extends UAV {
   startAcceptingNewLeaf(){
     if(this.child){
       this.child.startAcceptingNewLeaf();
+      this.shouldAcceptChildren = false;
     }
     else{ // leaf
       this.shouldAcceptChildren = true;
@@ -155,9 +155,6 @@ class DUAV extends UAV {
       this.clusterHead.didGetNewChild(child);
     } else if(this.parent){
       this.parent.didGetNewChild(this);
-    } else {
-      this.didBecomeDUAV();
-      print("didGetNewChild without CH");
     }
   }
 
@@ -191,11 +188,8 @@ class DUAV extends UAV {
   didLoseChild(child, weight) {
     if(this.isClusterHead()) {
       this.clusterHead.didLoseChild(child, weight);
-    } else if(this.parent){
+    } else{
       this.parent.didLoseChild(this, weight);
-    } else {
-      this.didBecomeDUAV();
-      print("didLoseChild without CH");
     }
   }
 
@@ -213,7 +207,9 @@ class DUAV extends UAV {
     this.shouldAcceptChildren = false;
     this.shouldFlock = true;
     this._color = UAVColor.DUAV;
-    if(this.parent) this.parent.child = null;
+    if(this.parent) {
+      this.parent.child = null;
+    }
     this.parent = null;
     if(this.child) this.child.didBecomeDUAV();
     this.child = null;

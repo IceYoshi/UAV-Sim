@@ -7,7 +7,7 @@ class KHOPCA {
       this.maxWeight = 50;
   }
 
-  execute(neighbors) {
+  run(neighbors) {
     this.rule1(neighbors);
     this.rule2(neighbors);
     this.rule3(neighbors);

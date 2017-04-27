@@ -84,8 +84,8 @@ class ClusterHead{
     }
   }
 
-  didGetNewChild(child){
-    let branch = this.getBranchOfHead(child);
+  didGetNewChild(branchhead){
+    let branch = this.getBranchOfHead(branchhead);
     if(branch) {
       branch.length++;
       this.startAcceptingAdditionalLeaf();
@@ -118,6 +118,7 @@ class ClusterHead{
       branch.head = null;
 
       if(this.getNumberOfOccupiedBranches() == 0) {
+        this.uav.khopca.weight = this.uav.khopca.maxWeight - 1;
         this.uav.didBecomeDUAV();
       } else {
         this.stopAcceptingAdditionalLeaf();
@@ -139,7 +140,7 @@ class ClusterHead{
 
   balanceCluster() {
     let branches = this.getOccupiedBranches();
-    let minBranchLength = min(branches.map(branch => branch.length));
+    let minBranchLength = min(this.branches.map(branch => branch._length));
     for(let i=0; i<branches.length; ++i){
       if(branches[i].length > minBranchLength + 1) {
         branches[i].head.removeChildAt(minBranchLength + 2);
