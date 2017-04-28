@@ -12,7 +12,6 @@ class MUAV extends UAV {
       /*communicationRange:*/ 100
     );
     this.textWeightGraphics = createGraphics(9*radius,3*radius);
-
   }
 
   draw(){
@@ -23,12 +22,6 @@ class MUAV extends UAV {
     this.drawTexture();
     sphere(this._radius);
     pop();
-  }
-
-  drawTexture(){
-    this.textWeightGraphics.background(this._color);
-    texture(this.textWeightGraphics);
-
   }
 
   drawTexture(){

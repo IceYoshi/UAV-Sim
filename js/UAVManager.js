@@ -14,8 +14,8 @@ class UAVManager {
   }
 
   draw() {
-    for(let i = 0; i < this._duavs.length; i++) {
-     this._duavs[i].draw();
+    for(let i = 0; i < this._uavs.length; i++) {
+     this._uavs[i].draw();
     }
     this.drawLinks();
   }
