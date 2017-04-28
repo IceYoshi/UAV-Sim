@@ -7,7 +7,7 @@ class MUAV extends UAV {
       /*position:*/ position,
       /*color:*/ UAVColor.MUAV,
       /*maxSpeed:*/ 0.8,
-      /*collisionThreshold:*/ 20,
+      /*collisionThreshold:*/ 60,
       /*wobblingRadius:*/ 150,
       /*communicationRange:*/ 100
     );

@@ -7,7 +7,7 @@ class DUAV extends UAV {
       /*position:*/ position,
       /*color:*/ UAVColor.DUAV,
       /*maxSpeed:*/ 0.8,
-      /*collisionThreshold:*/ 30,
+      /*collisionThreshold:*/ 40,
       /*wobblingRadius:*/ 50,
       /*communicationRange:*/ 100
     );
@@ -49,9 +49,8 @@ class DUAV extends UAV {
      * execute as last within this clode-block!
      * changes anchorPosition of itself, thus changes neighbors parameter of other uav's
     */
-
-    this.doFormation(mUAVs);
     this.chase(mUAVs);
+    this.doFormation(mUAVs);
 
     this.boundWithinFlightzone();
   }
@@ -64,53 +63,54 @@ class DUAV extends UAV {
   }
 
 
-  doFormation(mUAVs){
-      if(this.isClusterHead() && chasing){
+  doFormation(mUAVs) {
+      if(this.isClusterHead() && chasing) {
         //Vector from CH to mUAV
-        let direction = this.headingTo(mUAVs[0].actualPosition).normalize();
-        let formationDir = this.formationDirection(direction);
-
+        let direction = this.headingTo(mUAVs[0].actualPosition).normalize().mult(this.collisionThreshold);
+        let formationDir = this.formationDirection(direction).mult(this.collisionThreshold);
         var head = this.clusterHead;
+
         for(let i = 0; i < head.branches.length; i++) {
-          let dTheta = (2 * Math.PI) / (head.branches.length);
           let child = head.branches[i];
+          let dTheta = (2 * Math.PI) / (head.branches.length);
           let rotTheta = i * dTheta;
 
-          let targetPos = head.uav.actualPosition;
-          if(this.distanceTo(child) <= this.collisionThreshold) {
-            targetPos = head.uav.actualPosition.add(formationDir.mult(this.collisionThreshold));
-            //Rotate along z axis
-            targetPos.x = targetPos.x * cos(rotTheta) + targetPos.y * sin(rotTheta);
-            targetPos.y = targetPos.x * -sin(rotTheta) + targetPos.y * cos(rotTheta);
-          }
-          else {
-            targetPos = targetPos.add(direction.mult(this.collisionThreshold));
-          }
+          let targetPos = head.uav.actualPosition.add(formationDir);
+          //Rotate along z axis
+          targetPos.x = targetPos.x * cos(rotTheta) + targetPos.y * sin(rotTheta);
+          targetPos.y = targetPos.x * -sin(rotTheta) + targetPos.y * cos(rotTheta);
+
+          //Move towards the mUAV
+          targetPos = head.uav.actualPosition.add(direction);
           let curPos = child.actualPosition;
           let dir = targetPos.sub(curPos).normalize();
           child.applyForce(dir);
+
+          //Move the branch children
           this.moveAllBranchChildren(child, direction);
         }
       }
-  }
+    }
 
 
-  formationDirection(direction){
+  formationDirection(direction) {
     let upDir = createVector(0, -1, 0);
-    let formationDir = createVector((direction.y*upDir.z)-(direction.z*upDir.y),
-                                (direction.z*upDir.x)-(direction.x*upDir.z),
-                                (direction.x*upDir.y)-(direction.y*upDir.x));
-
+    let formationDir = createVector((direction.y * upDir.z) - (direction.z * upDir.y),
+                                    (direction.z * upDir.x) - (direction.x * upDir.z),
+                                    (direction.x * upDir.y) - (direction.y * upDir.x));
     return formationDir.normalize();
   }
 
-  moveAllBranchChildren(branchParent, mUAVDir){
+  moveAllBranchChildren(branchParent, mUAVDir) {
     var head = branchParent;
     var child = head.child;
     while(head && child) {
-      let targetPos = head.actualPosition.add(mUAVDir.mult(this.collisionThreshold));
-      child.maxSpeed = 1.6;
-      child.moveTo(targetPos);
+      let targetPos = head.actualPosition.add(mUAVDir);
+      let curPos = child.actualPosition;
+      let dir = targetPos.sub(curPos).normalize();
+      child.maxSpeed = 1.0;
+      child.applyForce(dir);
+
       head = child;
       if(head) child = head.child;
     }
