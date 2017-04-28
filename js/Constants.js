@@ -1,9 +1,3 @@
-const UAVStateEnum = {
-  KHOPCA:         "KHOPCA",
-  OWN_CLUSTERING: "OWN_CLUSTERING",
-  PHORMATION:     "FORMATION"
-};
-
 const UAVColor = {
   FLIGHTZONE:   "#e7e7e7",
   CLUSTER_HEAD: "black",
