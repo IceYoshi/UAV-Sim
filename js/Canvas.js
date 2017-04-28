@@ -5,6 +5,7 @@ var flightZoneSize = 500;
 var wobbling = true;
 var collision = true;
 var chasing = false;
+var formation = false;
 
 // DOM objects
 var velocitySlider;
@@ -64,6 +65,10 @@ function keyPressed(e) {
       // Toggle chasing phase
       chasing = !chasing;
       break;
+    case 70: // Key: f
+      // Toggle formation
+      formation = !formation;
+      break;
     case 82: // Key: r
       // Reset canvas
       let paused = drawManager.paused;
@@ -80,5 +85,5 @@ function keyPressed(e) {
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing}`);
+  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing} | <b>F</b>ormation: ${formation}`);
 }

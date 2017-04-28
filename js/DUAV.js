@@ -40,11 +40,18 @@ class DUAV extends UAV {
     this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
     this.doFlocking(nearbyUAVs);
+    this.doFormation(mUAVs);
     this.checkForDeadLinks();
     this.doChase(mUAVs);
 
     // Must be called last
     super.update(nearbyUAVs, mUAVs);
+  }
+
+  doFormation(mUAVs) {
+    if(this.isClusterHead()) {
+      this.clusterHead.doFormation(mUAVs);
+    }
   }
 
   drawOwnWeight(){
@@ -56,24 +63,7 @@ class DUAV extends UAV {
 
   doChase(mUAVs) {
     if(chasing && this.isClusterHead()) {
-      if(mUAVs && mUAVs.length > 0) {
-        let mUAV = mUAVs[0];
-        if(this._oldPos) {
-          // Predict mUAV heading
-          let n = this.headingTo(mUAV.actualPosition);
-          let v = mUAV.headingFrom(this._oldPos);
-
-          let a = p5.Vector.angleBetween(n, v);
-
-          let vProj = n.setMag(cos(a) * v.mag());
-
-          let offsetVector = v.sub(vProj);
-
-          this.applyForce(offsetVector, 0.5);
-        }
-        this.moveTo(mUAV.actualPosition);
-        this._oldPos = mUAV.actualPosition;
-      }
+      this.clusterHead.doChase(mUAVs);
     }
   }
 
