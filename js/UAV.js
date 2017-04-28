@@ -1,5 +1,10 @@
 class UAV {
-
+  get id() {
+    return this._id;
+  }
+  set id(value) {
+    this._id = value || 0;
+  }
   get anchorPosition() {
     return this._anchorPosition;
   }
@@ -133,8 +138,8 @@ class UAV {
     return this.headingTo(pos).mult(-1);
   }
 
-  moveTo(pos) {
-    this.applyForce(this.headingTo(pos));
+  moveTo(pos, w) {
+    this.applyForce(this.headingTo(pos), w);
   }
 
   applyForce(v, w) {

@@ -1,11 +1,11 @@
-class UAVCluster {
+class UAVManager {
 
   constructor(count, muav) {
     this._duavs = [];
     this._muavs = [muav];
     let uav_radius = 10;
     for(var i = 0; i < count; i++) {
-      this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
+      this._duavs.push(new DUAV(i, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
                                               random(-flightZoneSize/2, flightZoneSize/2),
                                               flightZoneSize/2)));
 
