@@ -1,6 +1,6 @@
 class DUAV extends UAV {
 
-  constructor(id, weight, radius, position) {
+  constructor(id, radius, position) {
     super(
       /*id:*/ id,
       /*radius:*/ radius,
@@ -11,13 +11,9 @@ class DUAV extends UAV {
       /*wobblingRadius:*/ 50,
       /*communicationRange:*/ 100
     );
-
-    this.weight = weight;
+    this.khopca = new KHOPCA(this)
     this.parent = null;
     this.child = null;
-    this.minWeight = 0;
-    this.maxWeight = 50;
-    this.leastNumberOfChildren = 5;
     this.textWeightGraphics = createGraphics(9*radius,3*radius);
     this.weightStrokeColor = "black";
 
@@ -39,20 +35,23 @@ class DUAV extends UAV {
   }
 
   update(nearbyUAVs, mUAVs) {
-    super.update(nearbyUAVs, mUAVs);
-    this.doKhopca(nearbyUAVs);
+    this.boundWithinFlightzone();
+
+    this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
     this.doFlocking(nearbyUAVs);
-    //this.checkForDeadLinks();
-
-    /*
-     * execute as last within this clode-block!
-     * changes anchorPosition of itself, thus changes neighbors parameter of other uav's
-    */
-    this.chase(mUAVs);
     this.doFormation(mUAVs);
+    this.checkForDeadLinks();
+    this.doChase(mUAVs);
 
-    this.boundWithinFlightzone();
+    // Must be called last
+    super.update(nearbyUAVs, mUAVs);
+  }
+
+  doFormation(mUAVs) {
+    if(this.isClusterHead()) {
+      this.clusterHead.doFormation(mUAVs);
+    }
   }
 
   drawOwnWeight(){
@@ -62,84 +61,11 @@ class DUAV extends UAV {
     texture(this.textWeightGraphics);
   }
 
-
-  doFormation(mUAVs) {
-      if(this.isClusterHead() && chasing) {
-        //Vector from CH to mUAV
-        let direction = this.headingTo(mUAVs[0].actualPosition).normalize().mult(this.collisionThreshold);
-        let formationDir = this.formationDirection(direction).mult(this.collisionThreshold);
-        var head = this.clusterHead;
-
-        for(let i = 0; i < head.branches.length; i++) {
-          let child = head.branches[i];
-          let dTheta = (2 * Math.PI) / (head.branches.length);
-          let rotTheta = i * dTheta;
-
-          let targetPos = head.uav.actualPosition.add(formationDir);
-          //Rotate along z axis
-          targetPos.x = targetPos.x * cos(rotTheta) + targetPos.y * sin(rotTheta);
-          targetPos.y = targetPos.x * -sin(rotTheta) + targetPos.y * cos(rotTheta);
-
-          //Move towards the mUAV
-          targetPos = head.uav.actualPosition.add(direction);
-          let curPos = child.actualPosition;
-          let dir = targetPos.sub(curPos).normalize();
-          child.applyForce(dir);
-
-          //Move the branch children
-          this.moveAllBranchChildren(child, direction);
-        }
-      }
-    }
-
-
-  formationDirection(direction) {
-    let upDir = createVector(0, -1, 0);
-    let formationDir = createVector((direction.y * upDir.z) - (direction.z * upDir.y),
-                                    (direction.z * upDir.x) - (direction.x * upDir.z),
-                                    (direction.x * upDir.y) - (direction.y * upDir.x));
-    return formationDir.normalize();
-  }
-
-  moveAllBranchChildren(branchParent, mUAVDir) {
-    var head = branchParent;
-    var child = head.child;
-    while(head && child) {
-      let targetPos = head.actualPosition.add(mUAVDir);
-      let curPos = child.actualPosition;
-      let dir = targetPos.sub(curPos).normalize();
-      child.maxSpeed = 1.0;
-      child.applyForce(dir);
-
-      head = child;
-      if(head) child = head.child;
-    }
-  }
-
-  chase(mUAVs) {
+  doChase(mUAVs) {
     if(chasing && this.isClusterHead()) {
-      if(mUAVs && mUAVs.length > 0) {
-        let mUAV = mUAVs[0];
-        if(this._oldPos) {
-          // Predict mUAV heading
-          let n = this.headingTo(mUAV.actualPosition);
-          let v = mUAV.headingFrom(this._oldPos);
-
-          let a = p5.Vector.angleBetween(n, v);
-
-          let vProj = n.setMag(cos(a) * v.mag());
-
-          let offsetVector = v.sub(vProj);
-
-          this.applyForce(offsetVector, 0.5);
-        }
-        this.moveTo(mUAV.actualPosition);
-        this._oldPos = mUAV.actualPosition;
-      }
+      this.clusterHead.doChase(mUAVs);
     }
-
   }
-
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
@@ -154,26 +80,20 @@ class DUAV extends UAV {
   }
 
   isClusterHead(){
-    //return this.weight == this.maxWeight;
     return this.clusterHead != null;
   }
 
   calculateMeanPosition(neighbors){
-    neighbors.push(this); // optional
     let sum = createVector(0,0,0);
     for(let i=0; i<neighbors.length; ++i){
-      sum.add(neighbors[i].anchorPosition);
+      sum.add(neighbors[i].actualPosition);
     }
     return sum.div(neighbors.length);
   }
 
   doFlocking(neighbors){
     if(this.shouldFlock){
-      let targetPos = this.calculateMeanPosition(neighbors);
-      this.anchorPosition.add(createVector( targetPos.x - this.anchorPosition.x,
-                                            targetPos.y - this.anchorPosition.y,
-                                            targetPos.z - this.anchorPosition.z)
-                                            .normalize());
+      this.moveTo(this.calculateMeanPosition(neighbors), 0.5);
     }
   }
 
@@ -181,7 +101,7 @@ class DUAV extends UAV {
     if(!this.isClusterHead()){
         if(!this.parent){
           let possibleConnections = neighbors.filter(uav => uav.shouldAcceptChildren)
-                                              .sort(this.sortByDistance(this));
+                                              .sort((uav1, uav2) => this.distanceTo(uav2) - this.distanceTo(uav1));
           if(possibleConnections.length>0){
             let uav = possibleConnections[0];
             if(uav.childDidAskForConnection(this))  uav.appendChild(this);
@@ -189,20 +109,6 @@ class DUAV extends UAV {
         }
     }
   }
-
-  sortByDistance(refUav) {
-      return function(uav1, uav2) {
-          return refUav.distanceTo(uav2) - refUav.distanceTo(uav1);
-      }
-  }
-
-  doKhopca(neighbors){
-    this.rule1(neighbors);
-    this.rule2(neighbors);
-    this.rule3(neighbors);
-    this.rule4(neighbors);
-  }
-
 
   appendChild(uav){
       if(this.isClusterHead())  this.clusterHead.appendChild(uav);
@@ -213,27 +119,32 @@ class DUAV extends UAV {
         uav.shouldFlock = false;
         this.shouldAcceptChildren = uav.shouldAcceptChildren = false;
         uav._color = this._color;
-        this.didGetNewChild();
+        this.didGetNewChild(uav);
       }
   }
 
   startAcceptingNewLeaf(){
     if(this.child){
       this.child.startAcceptingNewLeaf();
+      this.shouldAcceptChildren = false;
     }
     else{ // leaf
       this.shouldAcceptChildren = true;
     }
   }
 
-  didGetNewChild(){
-    if(this.parent){
-      this.parent.didGetNewChild();
-      return;
+  stopAcceptingNewLeaf(){
+    if(this.child){
+      this.child.stopAcceptingNewLeaf();
     }
-    // from here: CH
+    this.shouldAcceptChildren = false;
+  }
+
+  didGetNewChild(child){
     if(this.isClusterHead()){
-      this.clusterHead.didGetNewChild();
+      this.clusterHead.didGetNewChild(child);
+    } else if(this.parent){
+      this.parent.didGetNewChild(this);
     }
   }
 
@@ -249,8 +160,26 @@ class DUAV extends UAV {
 
   removeChild(){
     if(this.child){
+      let child = this.child;
       this.child.didBecomeDUAV();
       this.child = null;
+      this.didLoseChild(child, this.ownWeight);
+    }
+  }
+
+  removeChildAt(weight) {
+    if(this.ownWeight == weight) {
+      this.didBecomeDUAV();
+    } else if(this.child) {
+      this.child.removeChildAt(weight);
+    }
+  }
+
+  didLoseChild(child, weight) {
+    if(this.isClusterHead()) {
+      this.clusterHead.didLoseChild(child, weight);
+    } else{
+      this.parent.didLoseChild(this, weight);
     }
   }
 
@@ -268,6 +197,9 @@ class DUAV extends UAV {
     this.shouldAcceptChildren = false;
     this.shouldFlock = true;
     this._color = UAVColor.DUAV;
+    if(this.parent) {
+      this.parent.child = null;
+    }
     this.parent = null;
     if(this.child) this.child.didBecomeDUAV();
     this.child = null;
@@ -277,62 +209,6 @@ class DUAV extends UAV {
   childDidAskForConnection(child){
     if(this.isClusterHead()) return this.clusterHead.childDidAskForConnection(child);
     return this.shouldAcceptChildren;
-  }
-
-  rule1(neighbors){
-    let maxW = this.maxWeightofNeighborhood(neighbors);
-    if(maxW>=this.minWeight){
-      let rule1Neighbors = neighbors.filter(uav => uav.weight == maxW);
-      let wasCH = this.isClusterHead();
-      if(maxW > this.weight){
-        this.weight = max([this.minWeight,maxW-1]);
-
-        if(wasCH) this.didBecomeDUAV();
-      }
-    }
-  }
-
-  rule2(neighbors){
-    if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
-        // from here: Cluster Head!
-        this.weight = this.maxWeight;
-        this._color = UAVColor.CLUSTER_HEAD;
-        this.didBecomeClusterHead(neighbors);
-    }
-  }
-
-  rule3(neighbors){
-    let maxW = this.maxWeightofNeighborhood(neighbors);
-    if(maxW>=this.minWeight){
-      let wasCH = this.isClusterHead();
-      if(maxW>this.minWeight-1 && maxW <= this.weight && this.weight != this.maxWeight){
-        this.weight -= 1;
-        if(wasCH) this.didBecomeDUAV();
-      }
-    }
-  }
-
-  rule4(neighbors){
-    let maxW = this.maxWeightofNeighborhood(neighbors);
-    if(maxW>=this.minWeight){
-      let wasCH = this.isClusterHead();
-
-      if(maxW == this.maxWeight && this.weight == this.maxWeight){
-        this.weight = random(this.weight, maxW);
-        this.weight -= 1;
-        if(wasCH) this.didBecomeDUAV();
-      }
-    }
-  }
-
-  maxWeightofNeighborhood(neighbors){
-    if(neighbors.length==0) return this.minWeight-1;
-    let max = neighbors[0].weight;
-    for(let i=1; i<neighbors.length;++i){
-      if(neighbors[i].weight > max)
-        max = neighbors[i].weight;
-    }
-    return max;
   }
 
 }

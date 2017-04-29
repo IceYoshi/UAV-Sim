@@ -23,7 +23,9 @@ class DrawManager {
 
       // Update object if needed
       if(!this._paused && typeof drawObject.update === 'function') {
-        drawObject.update();
+        for(let i = 0; i < (velocitySlider.value() || 1); i++) {
+          drawObject.update();
+        }
       }
 
       // Draw object
