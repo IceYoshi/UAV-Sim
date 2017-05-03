@@ -4,7 +4,7 @@ class UAVManager {
     this._duavs = [];
     this._muavs = [muav];
     let uav_radius = 10;
-    for(var i = 0; i < 5/*count*/; i++) {
+    for(var i = 0; i < 11/*count*/; i++) {
       /*this._duavs.push(new DUAV(i, uav_radius, createVector(random(-flightZoneSize/2, flightZoneSize/2),
                                               random(-flightZoneSize/2, flightZoneSize/2),
                                               flightZoneSize/2)));*/
