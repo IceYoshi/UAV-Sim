@@ -180,36 +180,57 @@ class ClusterHead{
 
   doFormation(mUAVs){
     if(formation) {
-      let direction = this.uav.headingTo(mUAVs[0].actualPosition).setMag(this.uav.collisionThreshold);
-      let formationDir = this.formationDirection(direction).mult(this.uav.collisionThreshold);
+
+      let clusterRadius = 1.25 * this.uav.collisionThreshold;
       let occupiedBranches = this.getOccupiedBranches();
+      let dTheta = (TWO_PI) / (occupiedBranches.length);
+
       for(let i = 0; i < occupiedBranches.length; i++) {
           let child = occupiedBranches[i].head;
-            let dTheta = (TWO_PI) / this.getNumberOfOccupiedBranches();
-            let rotTheta = i * dTheta;
+          let rotTheta = i * dTheta;
 
-            let targetPos = this.uav.actualPosition.add(formationDir);
-            //Rotate along z axis
-            targetPos.x = targetPos.x * cos(rotTheta) + targetPos.y * sin(rotTheta);
-            targetPos.y = targetPos.x * -sin(rotTheta) + targetPos.y * cos(rotTheta);
+          let yAxis = createVector(0, 1, 0);
+          let dir =  this.uav.headingTo(mUAVs[0].actualPosition)
+                         .normalize()
+                         .mult(clusterRadius);
+          let v = this.crossProduct(dir, yAxis);
+          let k = dir.normalize();
 
-            //Move towards the mUAV
-            targetPos = this.uav.actualPosition.add(direction);
-            let curPos = child.actualPosition;
-            let dir = targetPos.sub(curPos).normalize();
-            child.applyForce(dir, 0.5);
+          let kCrossV = this.crossProduct(k, v);
+          let kDotV = this.dotProduct(k, v);
 
-            //Move the branch children
-            this.moveAllBranchChildren(child, direction);
+          let r1 = v.mult(cos(rotTheta));
+          let r2 = r1.add(kCrossV.mult(sin(rotTheta)));
+          let r3 = r2.add(k.mult(kDotV).mult(1 - cos(rotTheta)));
+
+          let rotDir = r3.mult(clusterRadius);
+          let targetPos = this.uav.actualPosition.add(dir).add(rotDir);
+
+          //Move towards the mUAV
+          let curPos = child.actualPosition;
+          dir = targetPos.sub(curPos).normalize();
+          child.applyForce(dir);
+
+          dir =  this.uav.headingTo(mUAVs[0].actualPosition)
+                         .normalize()
+                         .mult(clusterRadius);
+          this.moveAllBranchChildren(child, dir);
       }
     }
   }
-  formationDirection(direction) {
-    let upDir = createVector(0, -1, 0);
-    let formationDir = createVector((direction.y * upDir.z) - (direction.z * upDir.y),
-                                    (direction.z * upDir.x) - (direction.x * upDir.z),
-                                    (direction.x * upDir.y) - (direction.y * upDir.x));
-    return formationDir.normalize();
+
+  crossProduct(vec1, vec2) {
+    let res = createVector((vec1.y * vec2.z) - (vec1.z * vec2.y),
+                           (vec1.z * vec2.x) - (vec1.x * vec2.z),
+                           (vec1.x * vec2.y) - (vec1.y * vec2.x));
+    return res.normalize();
+  }
+
+  dotProduct(vec1, vec2) {
+    let res = createVector((vec1.x * vec2.x)
+                           + (vec1.y * vec2.y)
+                           + (vec1.z * vec2.z));
+    return res;
   }
 
   moveAllBranchChildren(branchParent, mUAVDir) {
@@ -220,11 +241,32 @@ class ClusterHead{
       let curPos = child.actualPosition;
       let dir = targetPos.sub(curPos).normalize();
       child.maxSpeed = 1.0;
-      child.applyForce(dir, 0.5);
+      child.applyForce(dir);
 
       head = child;
       if(head) child = head.child;
     }
   }
+
+    applyRotationMatrix(direction, formationDir, rotTheta){
+      let rotPos = createVector(0, 0, 0);
+      let x = direction.x;
+      let y = direction.y;
+      let z = direction.z;
+      let c = cos(rotTheta);
+      let s = sin(rotTheta);
+      let t = 1-c;
+      rotPos.x =    (formationDir.x * (c + x * x * t))
+                  + (formationDir.y * (y * x * t + z * s))
+                  + (formationDir.z * (z * x * t - y * s));
+      rotPos.y =    (formationDir.x * (x * y * t - z * s))
+                  + (formationDir.y * (c + y * y * t))
+                  + (formationDir.z * (z * y * t + x * s));
+      rotPos.z =    (formationDir.x * (x * z * t + y * s))
+                  + (formationDir.y * (y * z * t - x * s))
+                  + (formationDir.z * (c + z * z * t));
+
+      return rotPos;
+    }
 
 }
