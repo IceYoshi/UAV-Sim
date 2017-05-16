@@ -5,7 +5,9 @@ class UAVCluster {
     this._muavs = [muav];
     let uav_radius = 10;
     for(var i = 0; i < count; i++) {
-      this._duavs.push(new DUAV(i, 1, uav_radius, createVector(40+i, 40+i, flightZoneSize/2)));
+      this._duavs.push(new DUAV(i, 1, uav_radius, createVector(random(-flightZoneSize/5, flightZoneSize/5),
+                                              random(-flightZoneSize/5, flightZoneSize/5),
+                                              40)));
     }
     this._uavs = this._duavs.concat(this._muavs);
   }

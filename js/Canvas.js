@@ -37,7 +37,7 @@ function initializeDOM() {
 
 function initializeObjects() {
   drawManager.add(new FlightZone());
-  drawManager.add(new UAVManager(5, new MUAV(null, 10)));
+  drawManager.add(new UAVManager(20, new MUAV(null, 10)));
 }
 
 function draw() {
