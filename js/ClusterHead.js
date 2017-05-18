@@ -1,10 +1,10 @@
 class ClusterHead{
   constructor(uav){
     this.uav = uav;
-    this.nrOfBranches = 4;
+    this.nrOfBranches = Config.cluster.numOfBranches;
     this.branches = [];
     for(let i = 0; i < this.nrOfBranches; i++) {
-      this.branches.push(new UAVBranch(UAVColor.BRANCH_COLOR[i % UAVColor.BRANCH_COLOR.length]));
+      this.branches.push(new UAVBranch(Config.cluster.branchColors[i % Config.cluster.branchColors.length]));
     }
     uav.shouldAcceptChildren = true;
     uav.ownWeight = 0;

@@ -1,17 +1,22 @@
 class MUAV extends UAV {
 
-  constructor(id, radius, position) {
+  constructor(position) {
+
     super(
-      /*id:*/ id,
-      /*radius:*/ radius,
+      /*id:*/ null,
+      /*radius:*/ Config.muav.radius,
       /*position:*/ position,
-      /*color:*/ UAVColor.MUAV,
-      /*maxSpeed:*/ 0.8,
-      /*collisionThreshold:*/ 20,
-      /*wobblingRadius:*/ 150,
-      /*communicationRange:*/ 100
+      /*color:*/ Config.muav.color,
+      /*maxSpeed:*/ Config.muav.maxSpeed,
+      /*collisionThreshold:*/ Config.muav.collisionThreshold,
+      /*wobblingRadius:*/ Config.muav.wobblingRadius,
+      /*communicationRange:*/ Config.cluster.communicationRange
     );
-    this.textWeightGraphics = createGraphics(9*radius,3*radius);
+    this.textWeightGraphics = createGraphics(
+      9 * Config.muav.radius,
+      3 * Config.muav.radius
+    );
+
   }
 
   draw(){
