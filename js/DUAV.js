@@ -1,20 +1,27 @@
 class DUAV extends UAV {
 
-  constructor(id, radius, position) {
+
+  constructor(id, position) {
+
     super(
       /*id:*/ id,
-      /*radius:*/ radius,
+      /*radius:*/ Config.duav.radius,
       /*position:*/ position,
-      /*color:*/ UAVColor.DUAV,
-      /*maxSpeed:*/ 0.8,
-      /*collisionThreshold:*/ 40,
-      /*wobblingRadius:*/ 50,
-      /*communicationRange:*/ 100
+      /*color:*/ Config.duav.color,
+      /*maxSpeed:*/ Config.duav.maxSpeed,
+      /*collisionThreshold:*/ Config.duav.collisionThreshold,
+      /*wobblingRadius:*/ Config.duav.wobblingRadius,
+      /*communicationRange:*/ Config.cluster.communicationRange
     );
+
     this.khopca = new KHOPCA(this)
     this.parent = null;
     this.child = null;
-    this.textWeightGraphics = createGraphics(9*radius,3*radius);
+    this.textWeightGraphics = createGraphics(
+      9 * Config.duav.radius,
+      3 * Config.duav.radius
+    );
+
     this.weightStrokeColor = "black";
 
     this.clusterHead = null;
@@ -69,9 +76,9 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
-    let cx = constrain(pos.x, -flightZoneSize/2, flightZoneSize/2);
-    let cy = constrain(pos.y, -flightZoneSize/2, flightZoneSize/2);
-    let cz = constrain(pos.z, -flightZoneSize/2, flightZoneSize/2);
+    let cx = constrain(pos.x, -flightZoneSize, flightZoneSize);
+    let cy = constrain(pos.y, -flightZoneSize, flightZoneSize);
+    let cz = constrain(pos.z, -flightZoneSize, flightZoneSize);
     this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 
@@ -196,7 +203,7 @@ class DUAV extends UAV {
     this.ownWeight = 0;
     this.shouldAcceptChildren = false;
     this.shouldFlock = true;
-    this._color = UAVColor.DUAV;
+    this._color = Config.duav.color;
     if(this.parent) {
       this.parent.child = null;
     }

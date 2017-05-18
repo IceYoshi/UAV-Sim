@@ -1,7 +1,7 @@
 var drawManager = new DrawManager();
 
 // Global simulation settings
-var flightZoneSize = 500;
+var flightZoneSize = Config.flightZone.size;
 var wobbling = true;
 var collision = true;
 var chasing = false;
@@ -37,12 +37,12 @@ function initializeDOM() {
 
 function initializeObjects() {
   drawManager.add(new FlightZone());
-  drawManager.add(new UAVManager(50, new MUAV(null, 10)));
+  drawManager.add(new UAVManager());
 }
 
 function draw() {
   updateCamera();
-  background(UAVColor.FLIGHTZONE);
+  background(Config.flightZone.color);
   drawManager.draw();
 }
 
@@ -65,6 +65,10 @@ function keyPressed(e) {
       // Toggle chasing phase
       chasing = !chasing;
       break;
+    case 68: // Key: d
+      // Test downloading a file
+      download('test.csv', 'sep=,\nH1,H2\n50,20');
+      break;
     case 70: // Key: f
       // Toggle formation
       formation = !formation;
@@ -86,4 +90,17 @@ function keyPressed(e) {
 
 function updateSettingsInfo() {
   settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!drawManager.paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing} | <b>F</b>ormation: ${formation}`);
+}
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
 }
