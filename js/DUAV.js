@@ -1,7 +1,8 @@
 class DUAV extends UAV {
 
+
   constructor(id, position) {
-    
+
     super(
       /*id:*/ id,
       /*radius:*/ Config.duav.radius,
@@ -20,6 +21,7 @@ class DUAV extends UAV {
       9 * Config.duav.radius,
       3 * Config.duav.radius
     );
+
     this.weightStrokeColor = "black";
 
     this.clusterHead = null;

@@ -3,7 +3,7 @@ let Config = {
   "flightZone": {
     "color": "#e7e7e7",
     "size": 500,
-    "numOfDUAV": 50
+    "numOfDUAV": 20
   },
 
   "cluster": {
@@ -27,7 +27,7 @@ let Config = {
     "color": "red",
     "radius": 10,
     "maxSpeed": 0.8,
-    "collisionThreshold": 20,
+    "collisionThreshold": 60,
     "wobblingRadius": 150
   }
 
