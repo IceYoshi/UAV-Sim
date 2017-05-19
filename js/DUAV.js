@@ -7,19 +7,11 @@ class DUAV extends UAV {
       /*id:*/ id,
       /*radius:*/ Config.duav.radius,
       /*position:*/ position,
-<<<<<<< HEAD
-      /*color:*/ UAVColor.DUAV,
-      /*maxSpeed:*/ 0.8,
-      /*collisionThreshold:*/ 40,
-      /*wobblingRadius:*/ 40,
-      /*communicationRange:*/ 100
-=======
       /*color:*/ Config.duav.color,
       /*maxSpeed:*/ Config.duav.maxSpeed,
       /*collisionThreshold:*/ Config.duav.collisionThreshold,
       /*wobblingRadius:*/ Config.duav.wobblingRadius,
       /*communicationRange:*/ Config.cluster.communicationRange
->>>>>>> master
     );
 
     this.khopca = new KHOPCA(this)
@@ -57,22 +49,16 @@ class DUAV extends UAV {
     this.doFlocking(nearbyUAVs);
     this.doFormation(mUAVs);
     this.checkForDeadLinks();
-    this.doFormation(mUAVs);
     this.doChase(mUAVs);
 
     // Must be called last
     super.update(nearbyUAVs, mUAVs);
   }
 
-<<<<<<< HEAD
-  doFormation(mUAVs){
-    if(this.isClusterHead()) this.clusterHead.doFormation(mUAVs);
-=======
   doFormation(mUAVs) {
     if(this.isClusterHead()) {
       this.clusterHead.doFormation(mUAVs);
     }
->>>>>>> master
   }
 
   drawOwnWeight(){

@@ -177,50 +177,6 @@ class ClusterHead{
       }
     }
   }
-<<<<<<< HEAD
-  doFormation(mUAVs){
-    let direction = this.uav.headingTo(mUAVs[0].actualPosition).normalize().mult(this.uav.collisionThreshold*2);
-    let formationDir = this.formationDirection(direction).mult(this.uav.collisionThreshold*2);
-    for(let i = 0; i < this.branches.length; i++) {
-        let child = this.branches[i].head;
-        if(child){
-          let dTheta = (2 * Math.PI) / this.getNumberOfOccupiedBranches();
-          let rotTheta = 2*i * dTheta;
-
-          let targetPos = this.uav.actualPosition.add(formationDir);
-          //Rotate along z axis
-          targetPos.x = targetPos.x * cos(rotTheta) + targetPos.y * sin(rotTheta);
-          targetPos.y = targetPos.x * -sin(rotTheta) + targetPos.y * cos(rotTheta);
-
-          //Move towards the mUAV
-          targetPos = this.uav.actualPosition.add(direction);
-          let curPos = child.actualPosition;
-          let dir = targetPos.sub(curPos).normalize();
-          child.applyForce(dir);
-
-          //Move the branch children
-          this.moveAllBranchChildren(child, direction);
-        }
-    }
-  }
-  formationDirection(direction) {
-    let upDir = createVector(0, -1, 0);
-    let formationDir = createVector((direction.y * upDir.z) - (direction.z * upDir.y),
-                                    (direction.z * upDir.x) - (direction.x * upDir.z),
-                                    (direction.x * upDir.y) - (direction.y * upDir.x));
-    return formationDir.normalize();
-  }
-  
-  moveAllBranchChildren(branchParent, mUAVDir) {
-    var head = branchParent;
-    var child = head.child;
-    while(head && child) {
-      let targetPos = head.actualPosition.add(mUAVDir);
-      let curPos = child.actualPosition;
-      let dir = targetPos.sub(curPos).normalize();
-      child.maxSpeed = 1.0;
-      child.applyForce(dir);
-=======
 
   doFormation(mUAVs){
     if(formation) {
@@ -285,14 +241,11 @@ class ClusterHead{
 
       child.maxSpeed = 1.0;
       child.applyForce(dir, 0.7);
->>>>>>> master
 
       head = child;
       if(head) child = head.child;
     }
   }
-<<<<<<< HEAD
-=======
 
   rotateVaboutK(v, k, theta) {
       let kCrossV = this.crossProduct(k, v);
@@ -331,5 +284,4 @@ class ClusterHead{
     return res;
   }
 
->>>>>>> master
 }
