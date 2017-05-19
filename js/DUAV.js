@@ -1,20 +1,35 @@
 class DUAV extends UAV {
 
-  constructor(id, radius, position) {
+
+  constructor(id, position) {
+
     super(
       /*id:*/ id,
-      /*radius:*/ radius,
+      /*radius:*/ Config.duav.radius,
       /*position:*/ position,
+<<<<<<< HEAD
       /*color:*/ UAVColor.DUAV,
       /*maxSpeed:*/ 0.8,
       /*collisionThreshold:*/ 40,
       /*wobblingRadius:*/ 40,
       /*communicationRange:*/ 100
+=======
+      /*color:*/ Config.duav.color,
+      /*maxSpeed:*/ Config.duav.maxSpeed,
+      /*collisionThreshold:*/ Config.duav.collisionThreshold,
+      /*wobblingRadius:*/ Config.duav.wobblingRadius,
+      /*communicationRange:*/ Config.cluster.communicationRange
+>>>>>>> master
     );
+
     this.khopca = new KHOPCA(this)
     this.parent = null;
     this.child = null;
-    this.textWeightGraphics = createGraphics(9*radius,3*radius);
+    this.textWeightGraphics = createGraphics(
+      9 * Config.duav.radius,
+      3 * Config.duav.radius
+    );
+
     this.weightStrokeColor = "black";
 
     this.clusterHead = null;
@@ -40,6 +55,7 @@ class DUAV extends UAV {
     this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
     this.doFlocking(nearbyUAVs);
+    this.doFormation(mUAVs);
     this.checkForDeadLinks();
     this.doFormation(mUAVs);
     this.doChase(mUAVs);
@@ -48,8 +64,15 @@ class DUAV extends UAV {
     super.update(nearbyUAVs, mUAVs);
   }
 
+<<<<<<< HEAD
   doFormation(mUAVs){
     if(this.isClusterHead()) this.clusterHead.doFormation(mUAVs);
+=======
+  doFormation(mUAVs) {
+    if(this.isClusterHead()) {
+      this.clusterHead.doFormation(mUAVs);
+    }
+>>>>>>> master
   }
 
   drawOwnWeight(){
@@ -61,32 +84,15 @@ class DUAV extends UAV {
 
   doChase(mUAVs) {
     if(chasing && this.isClusterHead()) {
-      if(mUAVs && mUAVs.length > 0) {
-        let mUAV = mUAVs[0];
-        if(this._oldPos) {
-          // Predict mUAV heading
-          let n = this.headingTo(mUAV.actualPosition);
-          let v = mUAV.headingFrom(this._oldPos);
-
-          let a = p5.Vector.angleBetween(n, v);
-
-          let vProj = n.setMag(cos(a) * v.mag());
-
-          let offsetVector = v.sub(vProj);
-
-          this.applyForce(offsetVector, 0.5);
-        }
-        this.moveTo(mUAV.actualPosition);
-        this._oldPos = mUAV.actualPosition;
-      }
+      this.clusterHead.doChase(mUAVs);
     }
   }
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
-    let cx = constrain(pos.x, -flightZoneSize/2, flightZoneSize/2);
-    let cy = constrain(pos.y, -flightZoneSize/2, flightZoneSize/2);
-    let cz = constrain(pos.z, -flightZoneSize/2, flightZoneSize/2);
+    let cx = constrain(pos.x, -flightZoneSize, flightZoneSize);
+    let cy = constrain(pos.y, -flightZoneSize, flightZoneSize);
+    let cz = constrain(pos.z, -flightZoneSize, flightZoneSize);
     this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 
@@ -211,7 +217,7 @@ class DUAV extends UAV {
     this.ownWeight = 0;
     this.shouldAcceptChildren = false;
     this.shouldFlock = true;
-    this._color = UAVColor.DUAV;
+    this._color = Config.duav.color;
     if(this.parent) {
       this.parent.child = null;
     }

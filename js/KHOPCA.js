@@ -30,9 +30,8 @@ class KHOPCA {
     if(this.maxWeightofNeighborhood(neighbors) == this.minWeight && this.weight == this.minWeight){
         // from here: Cluster Head!
         this.weight = this.maxWeight;
-        this._uav._color = UAVColor.CLUSTER_HEAD;
+        this._uav._color = Config.cluster.headColor;
         this._uav.didBecomeClusterHead(neighbors);
-        //print(this._uav.id + " just became clusterhead.");
     }
   }
 
