@@ -124,6 +124,7 @@ class Controls {
       formation = true;
       shouldLogSimulation = true;
       velocitySlider.value(20);
+      updateSettingsInfo();
       this.resetCanvas();
     }
   }
@@ -133,6 +134,7 @@ class Controls {
       download('output.csv', simulationData);
       shouldLogSimulation = false;
       paused = true;
+      updateSettingsInfo();
     }
   }
 
