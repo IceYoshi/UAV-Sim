@@ -3,7 +3,7 @@ let Config = {
   "flightZone": {
     "color": "#e7e7e7",
     "size": 500,
-    "numOfDUAV": 50
+    "numOfDUAV": 10
   },
 
   "cluster": {

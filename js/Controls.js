@@ -7,11 +7,15 @@ var separation = true;
 var chasing = false;
 var formation = false;
 var autoRestart = true;
+var shouldLogSimulation = false;
 
 // DOM objects
 var velocitySlider;
 var settingsInfo;
-var cameraControlEnabled = true;
+var cameraControlEnabled = true; // Blocks camera rotating while on top of a slider
+var simulationData = "";
+var updateCount = 0;
+var numOfSimulations = 0;
 
 class Controls {
 
@@ -21,8 +25,9 @@ class Controls {
     this._keyBindings[' '] = this.pauseToggle.bind(this);
     this._keyBindings['a'] = this.autoRestartToggle.bind(this);
     this._keyBindings['c'] = this.chaseToggle.bind(this);
-    this._keyBindings['d'] = this.performSimulation.bind(this);
+    this._keyBindings['d'] = this.downloadSimulationData.bind(this);
     this._keyBindings['f'] = this.formationToggle.bind(this);
+    this._keyBindings['p'] = this.performSimulation.bind(this);
     this._keyBindings['r'] = this.resetCanvas.bind(this);
     this._keyBindings['s'] = this.separationToggle.bind(this);
     this._keyBindings['w'] = this.wobblingToggle.bind(this);
@@ -33,7 +38,7 @@ class Controls {
   initializeDOM() {
     let padding = 10;
 
-    velocitySlider = createSlider(1, 10, 1, 1);
+    velocitySlider = createSlider(1, 20, 1, 1);
     velocitySlider.style(`position: absolute; bottom: ${padding}; left: ${padding};`);
     velocitySlider.attribute('onmouseenter', 'cameraControlEnabled = false;');
     velocitySlider.attribute('onmouseleave', 'cameraControlEnabled = true;');
@@ -46,7 +51,37 @@ class Controls {
   }
 
   muavIsOutsideFlightZone() {
-    if(autoRestart) this.resetCanvas();
+    if(shouldLogSimulation) {
+      numOfSimulations++;
+      simulationData += `\n${Config.flightZone.size}` +
+                        `,${Config.flightZone.numOfDUAV}` +
+                        `,${Config.cluster.communicationRange}` +
+                        `,${Config.cluster.numOfBranches}` +
+                        `,${Config.duav.radius}` +
+                        `,${Config.duav.maxSpeed}` +
+                        `,${Config.duav.collisionThreshold}` +
+                        `,${Config.duav.wobblingRadius}` +
+                        `,${Config.muav.radius}` +
+                        `,${Config.muav.maxSpeed}` +
+                        `,${Config.muav.collisionThreshold}` +
+                        `,${Config.muav.wobblingRadius}` +
+                        `,${updateCount}`;
+      this.changeConfig();
+      this.resetCanvas();
+    } else if(autoRestart) {
+      this.resetCanvas();
+    }
+  }
+
+  changeConfig() {
+    if(numOfSimulations >= 3) {
+      Config.flightZone.numOfDUAV += 10;
+      numOfSimulations = 0;
+    }
+
+    if(Config.flightZone.numOfDUAV >= 30) {
+      this.downloadSimulationData();
+    }
   }
 
   keyPressed(keyCode) {
@@ -70,7 +105,35 @@ class Controls {
   }
 
   performSimulation() {
-    download('output.csv', 'sep=,\nH1,H2\n50,20');
+    if(!shouldLogSimulation) {
+      simulationData = 'sep=,\n' +
+                      'flightZoneSize' +
+                      ',numOfDUAV' +
+                      ',communicationRange' +
+                      ',numOfBranches' +
+                      ',duavRadius' +
+                      ',duavMaxSpeed' +
+                      ',duavCollisionThreshold' +
+                      ',duavWobblingRadius' +
+                      ',muavRadius' +
+                      ',muavMaxSpeed' +
+                      ',muavCollisionThreshold' +
+                      ',muavWobblingRadius' +
+                      ',timePassed';
+      chasing = true;
+      formation = true;
+      shouldLogSimulation = true;
+      velocitySlider.value(20);
+      this.resetCanvas();
+    }
+  }
+
+  downloadSimulationData() {
+    if(shouldLogSimulation) {
+      download('output.csv', simulationData);
+      shouldLogSimulation = false;
+      paused = true;
+    }
   }
 
   formationToggle() {
@@ -78,8 +141,10 @@ class Controls {
   }
 
   resetCanvas() {
+    drawManager.stop();
     drawManager = new DrawManager();
     drawManager.initializeObjects();
+    updateCount = 0;
   }
 
   wobblingToggle() {

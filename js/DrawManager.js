@@ -4,6 +4,10 @@ class DrawManager {
     this.drawBuffer = [];
   }
 
+  stop() {
+    this._stop = true;
+  }
+
   add(drawable) {
     this.drawBuffer.push(drawable);
     return drawable; // Useful for chaining
@@ -16,6 +20,8 @@ class DrawManager {
       // Update object if needed
       if(!paused && typeof drawObject.update === 'function') {
         for(let i = 0; i < (velocitySlider.value() || 1); i++) {
+          if(this._stop) return;
+          updateCount++;
           drawObject.update();
         }
       }
