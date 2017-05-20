@@ -6,7 +6,7 @@ class UAVManager {
     for(var i = 0; i < Config.flightZone.numOfDUAV; i++) {
       this._duavs.push(new DUAV(i, createVector(random(-Config.flightZone.size/2, Config.flightZone.size/2),
                                               random(-Config.flightZone.size/2, Config.flightZone.size/2),
-                                                                                      random(-Config.flightZone.size/2, Config.flightZone.size/2))));
+                                            /*random(-Config.flightZone.size/2, Config.flightZone.size/2)*/Config.flightZone.size/2)));
     }
     this._uavs = this._duavs.concat(this._muavs);
   }

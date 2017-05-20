@@ -61,6 +61,25 @@ class DUAV extends UAV {
     }
   }
 
+  positionateAccordingFormation(angle, mUAVDir, rotDir, clusterRadius, targetPos){
+    var fracAngle = angle * this.ownWeight;
+    var xMag = clusterRadius * cos(fracAngle);
+    var zMag = clusterRadius * sin(fracAngle);
+    var xComp = rotDir.normalize().mult(xMag);
+    var zComp = mUAVDir.normalize().mult(zMag);
+
+    targetPos = targetPos.add(xComp).add(zComp);
+
+    var curPos = this.actualPosition;
+    var dir = targetPos.sub(curPos).normalize();
+    this.maxSpeed = 1.0;
+    this.applyForce(dir, 0.7);
+
+    if(this.child){
+      this.child.positionateAccordingFormation(angle, mUAVDir, rotDir, clusterRadius, this.actualPosition);
+    }
+  }
+
   drawOwnWeight(){
     this.textWeightGraphics.background(this._color);
     this.textWeightGraphics.stroke(this.weightStrokeColor);

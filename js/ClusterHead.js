@@ -180,7 +180,6 @@ class ClusterHead{
 
   doFormation(mUAVs){
     if(formation) {
-
       var clusterRadius = this.uav.collisionThreshold + 5;
       var occupiedBranches = this.getOccupiedBranches();
       let nrOfBranches = occupiedBranches.length;
@@ -188,7 +187,7 @@ class ClusterHead{
       var maxBranchLength = this.getMaxBranchLength();
 
       for(let i = 0; i < nrOfBranches; i++) {
-        let branchParent = occupiedBranches[i].head;
+        let branchHead = occupiedBranches[i].head;
 
         let dUAVSeparation = 2 * clusterRadius * sin(Math.PI / (2 * maxBranchLength));
         let yRotTheta = i * separationTheta;
@@ -196,92 +195,34 @@ class ClusterHead{
         let yAxis = createVector(0, 1, 0);
         let direction = this.scaledDirection(this.uav, mUAVs[0], dUAVSeparation);
 
-        let v = this.crossProduct(direction, yAxis);
+        let v = MathHelper.crossProduct(direction, yAxis);
         let k = direction.normalize();
-        let rotDir = this.rotateVaboutK(v, k, yRotTheta).mult(dUAVSeparation);
+        let rotDir = MathHelper.rotateVaboutK(v, k, yRotTheta).mult(dUAVSeparation);
 
         let mUAVDir = this.scaledDirection(this.uav, mUAVs[0], dUAVSeparation);
-        this.calculateFormationPositins(branchParent, mUAVDir, rotDir, clusterRadius);
+        this.positionateBranchesForFormation(branchHead, mUAVDir, rotDir, clusterRadius);
       }
     }
   }
 
-  calculateFormationPositins(branchParent, mUAVDir, rotDir, clusterRadius) {
-    var head = branchParent;
-    var child = head.child;
+  positionateBranchesForFormation(branchHead, mUAVDir, rotDir, clusterRadius) {
+    let branchLength = this.getMaxBranchLength() + 1;
+    let clusterAngle = Math.PI * 0.75;
 
-    var branchLength = this.getMaxBranchLength() + 1;
-    var clusterAngle = Math.PI * 0.5;
-    var childIndex = 1;
-
-    var fracAngle = clusterAngle * childIndex / branchLength;
-
-	  var xMag = clusterRadius * cos(fracAngle);
-    var zMag = clusterRadius * sin(fracAngle);
-	  var xComp = rotDir.normalize().mult(xMag);
-	  var zComp = mUAVDir.normalize().mult(zMag);
-
-    var targetPos = this.uav.actualPosition.add(xComp).add(zComp);
-	  var curPos = branchParent.actualPosition;
-    var dir = targetPos.sub(curPos).normalize();
-    branchParent.applyForce(dir, 0.7);
-
-    while(head && child) {
-  	  childIndex++;
-  	  fracAngle = clusterAngle * childIndex / branchLength;
-
-  	  xMag = clusterRadius * cos(fracAngle);
-  	  zMag = clusterRadius * sin(fracAngle);
-  	  xComp = rotDir.normalize().mult(xMag);
-  	  zComp = mUAVDir.normalize().mult(zMag);
-
-      targetPos = head.actualPosition.add(xComp).add(zComp);
-      curPos = child.actualPosition;
-      dir = targetPos.sub(curPos).normalize();
-
-      child.maxSpeed = 1.0;
-      child.applyForce(dir, 0.7);
-
-      head = child;
-      if(head) child = head.child;
-    }
+    branchHead.positionateAccordingFormation( clusterAngle/branchLength,
+                                                mUAVDir,
+                                                rotDir,
+                                                clusterRadius,
+                                                this.uav.actualPosition);
   }
 
-  rotateVaboutK(v, k, theta) {
-      let kCrossV = this.crossProduct(k, v);
-      let kDotV = this.dotProduct(k, v);
-
-      let r1 = v.mult(cos(theta));
-      let r2 = r1.add(kCrossV.mult(sin(theta)));
-      let r3 = r2.add(k.mult(kDotV).mult(1 - cos(theta)));
-
-      return r3;
-    }
-
   scaledDirection(start, end, magnitude){
-    let scaledVector = start.headingTo(end.actualPosition)
+    return start.headingTo(end.actualPosition)
                             .normalize()
                             .mult(magnitude || 1);
-     return scaledVector;
   }
 
   getMaxBranchLength(){
-    let maxBranchLength = max(this.branches.map(branch => branch._length));
-    return maxBranchLength;
+    return max(this.branches.map(branch => branch._length));
   }
-
-  crossProduct(vec1, vec2) {
-    let res = createVector((vec1.y * vec2.z) - (vec1.z * vec2.y),
-                           (vec1.z * vec2.x) - (vec1.x * vec2.z),
-                           (vec1.x * vec2.y) - (vec1.y * vec2.x));
-    return res.normalize();
-  }
-
-  dotProduct(vec1, vec2) {
-    let res =   (vec1.x * vec2.x)
-              + (vec1.y * vec2.y)
-              + (vec1.z * vec2.z);
-    return res;
-  }
-
 }
