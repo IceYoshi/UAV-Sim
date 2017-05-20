@@ -28,7 +28,12 @@ let Config = {
     "minCommunicationRange": 50,
     "maxCommunicationRange": 300,
     "communicationRange": 100,
-    "numOfBranches": 6
+    "minNumOfBranches": 2,
+    "numOfBranches": 6,
+    "maxNumOfBranches": 10,
+    "minFormationAngle": Math.PI * 0.25,
+    "formationAngle": Math.PI * 0.75,
+    "maxFormationAngle": Math.PI * 1
   },
 
   "duav": {

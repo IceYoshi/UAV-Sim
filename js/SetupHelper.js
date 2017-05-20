@@ -50,6 +50,13 @@ function initializeDOM(){
     $("#lblMinCommunicationRangedMUAV").text(Config.cluster.minCommunicationRange);
     $("#lblMaxCommunicationRangedMUAV").text(Config.cluster.maxCommunicationRange);
 
+    $("#lblminNumOfBranchesCH").text(Config.cluster.minNumOfBranches);
+    $("#lblmaxNumOfBranchesCH").text(Config.cluster.maxNumOfBranches);
+    $("#lblCurrentNumOfBranchesCH").text(Config.cluster.numOfBranches);
+    $("#lblminFormationAngleCH").text(Config.cluster.minFormationAngle);
+    $("#lblmaxFormationAngleCH").text(Config.cluster.maxFormationAngle);
+    $("#lblCurrentFormationAngleCH").text(Config.cluster.formationAngle);
+
     $("button").click(didClickOnReset);
     $("#chbUpdate").change(checkboxUpdateDidChange);
     $("#chbWobbling").change(checkboxWobblingDidChange);
@@ -116,6 +123,22 @@ function initializeDOM(){
       slide: didSlideCollisionThresholdMUAV
     });
 
+    $("#numOfBranchesCHSlider").slider({
+      min: Config.cluster.minNumOfBranches,
+      max: Config.cluster.maxNumOfBranches,
+      step: 1,
+      slide: didSlideNumOfBranches
+    });
+
+    $("#formationAngleCHSlider").slider({
+      min: Config.cluster.minFormationAngle,
+      max: Config.cluster.maxFormationAngle,
+      step: 0.1,
+      slide: didSlideFormationAngle
+    });
+
+    $("#numOfBranchesCHSlider").slider("value", Config.cluster.numOfBranches );
+    $("#formationAngleCHSlider").slider("value", Config.cluster.formationAngle );
     $("#wobblingRadiusSliderMUAV").slider("value", Config.muav.wobblingRadius );
     $("#collisionThresholdSliderMUAV").slider("value", Config.muav.collisionThreshold );
     $("#speedMUAVSlider").slider("value", Config.muav.speed);
@@ -222,6 +245,18 @@ function initializeDOM(){
       Config.muav.speed = ui.value;
       $("#lblCurrentSliderMUAVSpeed").text(Config.muav.speed);
       setupDelegate.updateMUAVSpeed();
+    }
+
+    function didSlideNumOfBranches(event, ui){
+      Config.cluster.numOfBranches = ui.value;
+      $("#lblCurrentNumOfBranchesCH").text(Config.cluster.numOfBranches);
+      setupDelegate.updateCHNumOfBranches();
+    }
+
+    function didSlideFormationAngle(event, ui){
+      Config.cluster.formationAngle = ui.value;
+      $("#lblCurrentFormationAngleCH").text(Config.cluster.formationAngle);
+      setupDelegate.updateCHFormationAngle();
     }
 
     function didSlideWobblingRadiusMUAV(event, ui){

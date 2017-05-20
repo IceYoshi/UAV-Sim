@@ -216,6 +216,7 @@ class DUAV extends UAV {
 
   didBecomeDUAV(){
     if(this.isClusterHead()){
+      this.khopca.weight = this.khopca.maxWeight - 1;
       this.clusterHead.willBecomeDUAV();
       this.clusterHead = null;
     }

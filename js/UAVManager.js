@@ -75,6 +75,27 @@ class UAVManager {
     }
   }
 
+  updateCHNumOfBranches(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      let duav = this._duavs[i];
+
+      if(duav.isClusterHead()){
+      //  if(Config.cluster.numOfBranches > duav.clusterHead.numOfBranches){
+          duav.didBecomeDUAV();
+        /*}
+        else if(Config.cluster.numOfBranches < duav.clusterHead.numOfBranches){
+          let branches = duav.clusterHead.getOccupiedBranches();
+          for(let i = 0; i < (duav.clusterHead.numOfBranches-Config.cluster.numOfBranches); i++) {
+              duav.clusterHead.removeBranch(branches[i].head);
+          }
+        }*/
+      }
+    }
+  }
+
+  updateCHFormationAngle(){
+
+  }
 
   drawLinks(){
     beginShape(LINES);

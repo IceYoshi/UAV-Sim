@@ -138,7 +138,6 @@ class ClusterHead{
       branch.head = null;
 
       if(this.getNumberOfOccupiedBranches() == 0) {
-        this.uav.khopca.weight = this.uav.khopca.maxWeight - 1;
         this.uav.didBecomeDUAV();
       } else {
         this.stopAcceptingAdditionalLeaf();
@@ -207,7 +206,7 @@ class ClusterHead{
 
   positionateBranchesForFormation(branchHead, mUAVDir, rotDir, clusterRadius) {
     let branchLength = this.getMaxBranchLength() + 1;
-    let clusterAngle = Math.PI * 0.75;
+    let clusterAngle = Config.cluster.formationAngle;
 
     branchHead.positionateAccordingFormation( clusterAngle/branchLength,
                                                 mUAVDir,
