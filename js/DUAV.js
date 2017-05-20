@@ -8,7 +8,7 @@ class DUAV extends UAV {
       /*radius:*/ Config.duav.radius,
       /*position:*/ position,
       /*color:*/ Config.duav.color,
-      /*maxSpeed:*/ Config.duav.maxSpeed,
+      /*maxSpeed:*/ Config.duav.speed,
       /*collisionThreshold:*/ Config.duav.collisionThreshold,
       /*wobblingRadius:*/ Config.duav.wobblingRadius,
       /*communicationRange:*/ Config.cluster.communicationRange
@@ -72,7 +72,7 @@ class DUAV extends UAV {
 
     var curPos = this.actualPosition;
     var dir = targetPos.sub(curPos).normalize();
-    this.maxSpeed = 1.0;
+    //this.maxSpeed = 1.0;
     this.applyForce(dir, 0.7);
 
     if(this.child){
@@ -95,9 +95,9 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
-    let cx = constrain(pos.x, -flightZoneSize, flightZoneSize);
-    let cy = constrain(pos.y, -flightZoneSize, flightZoneSize);
-    let cz = constrain(pos.z, -flightZoneSize, flightZoneSize);
+    let cx = constrain(pos.x, -flightZoneSize.width, flightZoneSize.width);
+    let cy = constrain(pos.y, -flightZoneSize.height, flightZoneSize.height);
+    let cz = constrain(pos.z, -flightZoneSize.depth, flightZoneSize.depth);
     this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 

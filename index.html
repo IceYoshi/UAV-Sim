@@ -1,14 +1,16 @@
 <html>
   <head>
-    <style type="text/css">
-      body { margin:0; }
-    </style>
     <!-- Library, include first -->
-    <script src="./js/lib/p5.min.js"></script>
-    <script src="./js/lib/p5.dom.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/jquery-ui.min.css"></link>
+    <link rel="stylesheet" type="text/css" href="./css/style.css"></link>
+    <script src="./lib/jquery.js"></script>
+    <script src="./lib/jquery-ui.min.js"></script>
+    <script src="./lib/p5.min.js"></script>
+    <script src="./lib/p5.dom.min.js"></script>
 
     <!-- Own classes -->
     <script src="./js/Config.js"></script>
+    <script src="./js/SetupHelper.js"></script>
     <script src="./js/MathHelper.js"></script>
     <script src="./js/DrawManager.js"></script>
     <script src="./js/FlightZone.js"></script>
@@ -25,5 +27,242 @@
     <script src="./js/Canvas.js"></script>
   </head>
   <body oncontextmenu="return false;">
+      <div id="divWrapper">
+        <div id="divCanvas"></div>
+        <div id="divSettings">
+
+            <div id="divSettingsContent">
+                <h3>Simulation</h3>
+                <div>
+                          <div class="divSettingsContentEntry">
+                            <button id="btnReset" class="divSettingsContentEntryElement wFull">Reset</button>
+                            <label class="lbl lblElementInformation lblInfo">* needs a reset.</label>
+                          </div>
+                      <div class="divSettingsContentEntry">
+                        <label class="lbl lblPaddingLeft">Update frequency</label>
+                            <br/>
+                              <div class="divSettingsContentEntryFloatLeft wFourth">
+                                  <label id="lblSliderMinUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                              </div>
+                              <div class="divSettingsContentEntryFloatLeft wFifty">
+                                <div class="divSettingsContentEntryElement wSeventy" id="velocitySlider"></div>
+                              </div>
+                              <div class="divSettingsContentEntryFloatLeft wFourth">
+                                  <label id="lblSliderMaxUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 25%;" ></label>
+                              </div>
+                    </div>
+                    <div class="divSettingsContentEntry">
+                          <label id="lblVelocitySliderValue" class="lbl lblElementInformation wFull">(x1)</label>
+                    </div>
+                <div class="divSettingsContentEntry">
+                    <div class="divSettingsContentEntryLeft">
+                      <label class="lbl lblPaddingLeft">Update</label>
+                    </div>
+                    <div class="divSettingsContentEntryRight">
+                      <input id="chbUpdate" class="cmn-toggle cmn-toggle-round" type="checkbox" checked>
+                      <label for="chbUpdate"></label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                    <div class="divSettingsContentEntryLeft">
+                      <label class="lbl lblPaddingLeft">Wobbling</label>
+                    </div>
+                    <div class="divSettingsContentEntryRight">
+                      <input id="chbWobbling" class="cmn-toggle cmn-toggle-round" type="checkbox" checked>
+                      <label for="chbWobbling"></label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                    <div class="divSettingsContentEntryLeft">
+                      <label class="lbl lblPaddingLeft">Avoid Collisions</label>
+                    </div>
+                    <div class="divSettingsContentEntryRight">
+                      <input id="chbCollisions" class="cmn-toggle cmn-toggle-round" type="checkbox" checked>
+                      <label for="chbCollisions"></label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                    <div class="divSettingsContentEntryLeft">
+                      <label class="lbl lblPaddingLeft">Chasing</label>
+                    </div>
+                    <div class="divSettingsContentEntryRight">
+                      <input id="chbChasing" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                      <label for="chbChasing"></label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                    <div class="divSettingsContentEntryLeft">
+                      <label class="lbl lblPaddingLeft">Formation</label>
+                    </div>
+                    <div class="divSettingsContentEntryRight">
+                      <input id="chbFormation" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                      <label for="chbFormation"></label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                    <label class=" lbl lblSubHeading" >Number of UAV's<label class="lblStar">*</label></label>
+                    <div class="divSettingsContentEntryFloatLeft wFourth">
+                        <label id="lblSliderMinNrUavs" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                    </div>
+                    <div class="divSettingsContentEntryFloatLeft wFifty">
+                      <div class="divSettingsContentEntryElement" id="nrOfUavsSlider"></div>
+                    </div>
+                    <div class="divSettingsContentEntryFloatLeft wFourth">
+                        <label id="lblSliderMaxNrUavs" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                    </div>
+                </div>
+                <div class="divSettingsContentEntry">
+                      <label id="lblCurrentSliderNrOfUavs" class="lbl lblElementInformation wFull">1</label>
+                </div>
+                <div class="divSettingsContentEntry">
+                  <fieldset>
+                    <legend>UAV positioning<label class="lblStar">*</label></legend>
+                    <label for="radio-fixed">Fixed Plane</label>
+                    <input type="radio" name="radio" id="radio-fixed" checked>
+
+                    <label for="radio-3d">3D-Space</label>
+                    <input type="radio" name="radio" id="radio-3d">
+                  </fieldset>
+                </div>
+          <div>
+            </div>
+        </div>
+          <h3>Flightzone</h3>
+          <div>
+                    <div class="divSettingsContentEntry">
+                        <label class=" lbl lblSubHeading" >Size<label class="lblStar">*</label></label>
+                            <div class="divSettingsContentEntryFloatLeft wFourth">
+                                <label id="lblSliderMinFlightzoneSize" class=" lbl lblElementInformation" style="padding-left: 40%;">?</label>
+                            </div>
+                            <div class="divSettingsContentEntryFloatLeft wFifty">
+                              <div class="divSettingsContentEntryElement" id="flightZoneSizeSlider"></div>
+                            </div>
+                            <div class="divSettingsContentEntryFloatLeft wFourth">
+                                <label id="lblSliderMaxFlightzoneSize" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                            </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                        <label id="lblCurrentSliderFlightzoneSize" class="lbl lblElementInformation wFull">?</label>
+                  </div>
+          </div>
+          <h3>dUAV</h3>
+          <div>
+                      <div class="divSettingsContentEntry">
+                          <label class=" lbl lblSubHeading" >Speed</label>
+                              <div class="divSettingsContentEntryFloatLeft wFourth">
+                                  <label id="lblSliderMinDUAVSpeed" class=" lbl lblElementInformation" style="padding-left: 50%;">?</label>
+                              </div>
+                              <div class="divSettingsContentEntryFloatLeft wFifty">
+                                <div class="divSettingsContentEntryElement" id="speedDUAVSlider"></div>
+                              </div>
+                              <div class="divSettingsContentEntryFloatLeft wFourth">
+                                  <label id="lblSliderMaxDUAVSpeed" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                              </div>
+                    </div>
+                    <div class="divSettingsContentEntry">
+                          <label id="lblCurrentSliderDUAVSpeed" class="lbl lblElementInformation wFull">?</label>
+                    </div>
+
+                    <div class="divSettingsContentEntry">
+                        <label class=" lbl lblSubHeading">Collision Threshold</label>
+                        <div class="divSettingsContentEntryFloatLeft wFourth">
+                            <label id="lblMinCollisionThresholdDUAV" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                        </div>
+                        <div class="divSettingsContentEntryFloatLeft wFifty">
+                          <div class="divSettingsContentEntryElement" id="collisionThresholdSliderDUAV"></div>
+                        </div>
+                        <div class="divSettingsContentEntryFloatLeft wFourth">
+                            <label id="lblMaxCollisionThresholdDUAV" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                        </div>
+                    </div>
+                    <div class="divSettingsContentEntry">
+                          <label id="lblCurrentCollisionThresholdDUAV" class="lbl lblElementInformation wFull">?</label>
+                    </div>
+
+                      <div class="divSettingsContentEntry">
+                          <label class=" lbl lblSubHeading">Wobbling Radius</label>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMinWobblingRadiusdDUAV" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFifty">
+                            <div class="divSettingsContentEntryElement" id="wobblingRadiusSliderDUAV"></div>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMaxWobblingRadiusdDUAV" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                          </div>
+                      </div>
+                      <div class="divSettingsContentEntry">
+                            <label id="lblCurrentWobblingRadiusDUAV" class="lbl lblElementInformation wFull">?</label>
+                      </div>
+
+                      <div class="divSettingsContentEntry">
+                          <label class=" lbl lblSubHeading">Communication Range</label>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMinCommunicationRangedDUAV" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFifty">
+                            <div class="divSettingsContentEntryElement" id="communicationRangeSliderDUAV"></div>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMaxCommunicationRangedDUAV" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                          </div>
+                      </div>
+                      <div class="divSettingsContentEntry">
+                            <label id="lblCurrentComminicationRangeDUAV" class="lbl lblElementInformation wFull">?</label>
+                      </div>
+          </div>
+          <h3>mUAV</h3>
+          <div>
+                        <div class="divSettingsContentEntry">
+                            <label class=" lbl lblSubHeading" >Speed</label>
+                                <div class="divSettingsContentEntryFloatLeft wFourth">
+                                    <label id="lblSliderMinMUAVSpeed" class=" lbl lblElementInformation" style="padding-left: 50%;">?</label>
+                                </div>
+                                <div class="divSettingsContentEntryFloatLeft wFifty">
+                                  <div class="divSettingsContentEntryElement" id="speedMUAVSlider"></div>
+                                </div>
+                                <div class="divSettingsContentEntryFloatLeft wFourth">
+                                    <label id="lblSliderMaxMUAVSpeed" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                                </div>
+                      </div>
+                      <div class="divSettingsContentEntry">
+                            <label id="lblCurrentSliderMUAVSpeed" class="lbl lblElementInformation wFull">?</label>
+                      </div>
+
+                      <div class="divSettingsContentEntry">
+                          <label class=" lbl lblSubHeading">Collision Threshold</label>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMinCollisionThresholdMUAV" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFifty">
+                            <div class="divSettingsContentEntryElement" id="collisionThresholdSliderMUAV"></div>
+                          </div>
+                          <div class="divSettingsContentEntryFloatLeft wFourth">
+                              <label id="lblMaxCollisionThresholdMUAV" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                          </div>
+                      </div>
+                      <div class="divSettingsContentEntry">
+                            <label id="lblCurrentCollisionThresholdMUAV" class="lbl lblElementInformation wFull">?</label>
+                      </div>
+
+                        <div class="divSettingsContentEntry">
+                            <label class=" lbl lblSubHeading">Wobbling Radius</label>
+                            <div class="divSettingsContentEntryFloatLeft wFourth">
+                                <label id="lblMinWobblingRadiusdMUAV" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                            </div>
+                            <div class="divSettingsContentEntryFloatLeft wFifty">
+                              <div class="divSettingsContentEntryElement" id="wobblingRadiusSliderMUAV"></div>
+                            </div>
+                            <div class="divSettingsContentEntryFloatLeft wFourth">
+                                <label id="lblMaxWobblingRadiusdMUAV" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                            </div>
+                        </div>
+                        <div class="divSettingsContentEntry">
+                              <label id="lblCurrentWobblingRadiusMUAV" class="lbl lblElementInformation wFull">?</label>
+                        </div>
+
+          </div>
+        </div>
+      </div>
   </body>
 </html>
