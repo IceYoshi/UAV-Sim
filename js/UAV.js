@@ -90,7 +90,7 @@ class UAV {
 
   update(nearbyUAVs, mUAVs) {
     if(wobbling) this.updateWobblingOffset();
-    if(collision) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
+    if(separation) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
 
     this.executeMovement();
   }

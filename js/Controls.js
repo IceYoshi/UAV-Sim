@@ -3,14 +3,15 @@ var controls;
 // Global simulation settings
 var paused = false;
 var wobbling = true;
-var collision = true;
+var separation = true;
 var chasing = false;
 var formation = false;
+var autoRestart = true;
 
 // DOM objects
 var velocitySlider;
 var settingsInfo;
-var cameraControlEnabled = true
+var cameraControlEnabled = true;
 
 class Controls {
 
@@ -18,18 +19,19 @@ class Controls {
     this._keyBindings = {};
 
     this._keyBindings[' '] = this.pauseToggle.bind(this);
-    this._keyBindings['a'] = this.collisionToggle.bind(this);
+    this._keyBindings['a'] = this.autoRestartToggle.bind(this);
     this._keyBindings['c'] = this.chaseToggle.bind(this);
     this._keyBindings['d'] = this.performSimulation.bind(this);
     this._keyBindings['f'] = this.formationToggle.bind(this);
     this._keyBindings['r'] = this.resetCanvas.bind(this);
+    this._keyBindings['s'] = this.separationToggle.bind(this);
     this._keyBindings['w'] = this.wobblingToggle.bind(this);
 
     this.initializeDOM();
   }
 
   initializeDOM() {
-    let padding = 10
+    let padding = 10;
 
     velocitySlider = createSlider(1, 10, 1, 1);
     velocitySlider.style(`position: absolute; bottom: ${padding}; left: ${padding};`);
@@ -41,6 +43,10 @@ class Controls {
     settingsInfo.style(`position: absolute; bottom: ${padding}; left: ${2 * padding + velocitySlider.width};`);
 
     updateSettingsInfo();
+  }
+
+  muavIsOutsideFlightZone() {
+    if(autoRestart) this.resetCanvas();
   }
 
   keyPressed(keyCode) {
@@ -55,8 +61,8 @@ class Controls {
     paused = !paused;
   }
 
-  collisionToggle() {
-    collision = !collision;
+  separationToggle() {
+    separation = !separation;
   }
 
   chaseToggle() {
@@ -64,7 +70,7 @@ class Controls {
   }
 
   performSimulation() {
-    download('test.csv', 'sep=,\nH1,H2\n50,20');
+    download('output.csv', 'sep=,\nH1,H2\n50,20');
   }
 
   formationToggle() {
@@ -80,6 +86,10 @@ class Controls {
     wobbling = !wobbling;
   }
 
+  autoRestartToggle() {
+    autoRestart = !autoRestart;
+  }
+
 }
 
 function keyPressed(e) {
@@ -88,7 +98,7 @@ function keyPressed(e) {
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!paused} | <b>W</b>obbling: ${wobbling} | <b>A</b>void collisions: ${collision} | <b>C</b>hasing: ${chasing} | <b>F</b>ormation: ${formation}`);
+  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!paused} | <b>W</b>obbling: ${wobbling} | <b>S</b>eparation: ${separation} | <b>C</b>hasing: ${chasing} | <b>F</b>ormation: ${formation} | <b>A</b>utoRestart: ${autoRestart}`);
 }
 
 function download(filename, text) {
