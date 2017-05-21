@@ -33,7 +33,7 @@ function initializeDOM(){
     $("#lblCurrentWobblingRadiusDUAV").text(Config.duav.wobblingRadius);
     $("#lblMinWobblingRadiusdDUAV").text(Config.duav.minWobblingRadius);
     $("#lblMaxWobblingRadiusdDUAV").text(Config.duav.maxWobblingRadius);
-    $("#lblCurrentComminicationRangeDUAV").text(Config.cluster.communicationRange);
+    $("#lblCurrentCommunicationRangeDUAV").text(Config.cluster.communicationRange);
     $("#lblMinCommunicationRangedDUAV").text(Config.cluster.minCommunicationRange);
     $("#lblMaxCommunicationRangedDUAV").text(Config.cluster.maxCommunicationRange);
 
@@ -133,7 +133,7 @@ function initializeDOM(){
     $("#formationAngleCHSlider").slider({
       min: Config.cluster.minFormationAngle,
       max: Config.cluster.maxFormationAngle,
-      step: 0.1,
+      step: 0.01,
       slide: didSlideFormationAngle
     });
 
@@ -231,7 +231,7 @@ function initializeDOM(){
 
     function didSlideCommunicationRangeDUAV(event, ui){
       Config.cluster.communicationRange = ui.value;
-      $("#lblCurrentCommunicationRangeDUAV").text(Config.cluster.communicationRange);
+      $("#lblCurrentCommunicationRangeDUAV").text(ui.value);
       setupDelegate.updateDUAVCommunicationRange();
     }
 

@@ -199,16 +199,14 @@ class ClusterHead{
         let rotDir = MathHelper.rotateVaboutK(v, k, yRotTheta).mult(dUAVSeparation);
 
         let mUAVDir = this.scaledDirection(this.uav, mUAVs[0], dUAVSeparation);
-        this.positionateBranchesForFormation(branchHead, mUAVDir, rotDir, clusterRadius);
+        this.positionateBranchesForFormation(branchHead, mUAVs[0], mUAVDir, rotDir, clusterRadius);
       }
     }
   }
 
-  positionateBranchesForFormation(branchHead, mUAVDir, rotDir, clusterRadius) {
+  positionateBranchesForFormation(branchHead, mUAV, mUAVDir, rotDir, clusterRadius) {
     let branchLength = this.getMaxBranchLength() + 1;
-    let clusterAngle = Config.cluster.formationAngle;
-
-    branchHead.positionateAccordingFormation( clusterAngle/branchLength,
+    branchHead.positionateAccordingFormation( this.getEnclosementAngle(mUAV, clusterRadius)/branchLength,
                                                 mUAVDir,
                                                 rotDir,
                                                 clusterRadius,
@@ -223,5 +221,12 @@ class ClusterHead{
 
   getMaxBranchLength(){
     return max(this.branches.map(branch => branch._length));
+  }
+
+  getEnclosementAngle(mUAV, clusterRadius) {
+    if(this.uav.distanceTo(mUAV) < clusterRadius * (this.getMaxBranchLength() + 1) / 2) {
+      return Config.cluster.maxFormationAngle;
+    }
+    return Config.cluster.formationAngle
   }
 }

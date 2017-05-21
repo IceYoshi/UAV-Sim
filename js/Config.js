@@ -2,7 +2,7 @@ let Config = {
   "simulation":{
       "maxUpdate" : 10,
       "maxNumOfUAVs" : 100,
-      "numOfUAVs": 75,
+      "numOfUAVs": 30,
       "uavPositioningPlane" : true
   },
 
@@ -26,14 +26,14 @@ let Config = {
       "#d500cc","#FFFF00","#00FF00","#FF7F00","#9400D3","#057bff"
     ],
     "minCommunicationRange": 50,
-    "maxCommunicationRange": 300,
+    "maxCommunicationRange": 500,
     "communicationRange": 100,
     "minNumOfBranches": 2,
-    "numOfBranches": 6,
+    "numOfBranches": 3,
     "maxNumOfBranches": 10,
-    "minFormationAngle": Math.PI * 0.25,
-    "formationAngle": Math.PI * 0.75,
-    "maxFormationAngle": Math.PI * 1
+    "minFormationAngle": Math.round(Math.PI * 0.25 * 100) / 100,
+    "formationAngle": Math.round(Math.PI * 0.75 * 100) / 100,
+    "maxFormationAngle": Math.round(Math.PI * 1 * 100) / 100
   },
 
   "duav": {
@@ -41,12 +41,12 @@ let Config = {
     "radius": 10,
     "minSpeed": 0.1,
     "speed": 0.8,
-    "maxSpeed": 2.0,
+    "maxSpeed": 5.0,
     "minCollisionThreshold": 20,
     "collisionThreshold": 40,
     "maxCollisionThreshold": 100,
-    "minWobblingRadius": 20,
-    "maxWobblingRadius": 200,
+    "minWobblingRadius": 0,
+    "maxWobblingRadius": 500,
     "wobblingRadius": 50
   },
 
@@ -55,12 +55,12 @@ let Config = {
     "radius": 10,
     "minSpeed": 0.1,
     "speed": 0.8,
-    "maxSpeed": 2.0,
+    "maxSpeed": 5.0,
     "collisionThreshold": 40,
     "minCollisionThreshold": 20,
     "maxCollisionThreshold": 150,
     "collisionThreshold": 60,
-    "minWobblingRadius": 50,
+    "minWobblingRadius": 0,
     "maxWobblingRadius": 500,
     "wobblingRadius": 150
   }

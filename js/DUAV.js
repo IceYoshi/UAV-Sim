@@ -42,7 +42,9 @@ class DUAV extends UAV {
   }
 
   update(nearbyUAVs, mUAVs) {
-    this.boundWithinFlightzone();
+    if(this.isClusterHead()) {
+      this.boundWithinFlightzone();
+    }
 
     this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
@@ -95,9 +97,9 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
-    let cx = constrain(pos.x, -flightZoneSize.width, flightZoneSize.width);
-    let cy = constrain(pos.y, -flightZoneSize.height, flightZoneSize.height);
-    let cz = constrain(pos.z, -flightZoneSize.depth, flightZoneSize.depth);
+    let cx = constrain(pos.x, -flightZoneSize.width/2, flightZoneSize.width/2);
+    let cy = constrain(pos.y, -flightZoneSize.height/2, flightZoneSize.height/2);
+    let cz = constrain(pos.z, -flightZoneSize.depth/2, flightZoneSize.depth/2);
     this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 

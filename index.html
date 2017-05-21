@@ -3,10 +3,10 @@
     <!-- Library, include first -->
     <link rel="stylesheet" type="text/css" href="./css/jquery-ui.min.css"></link>
     <link rel="stylesheet" type="text/css" href="./css/style.css"></link>
-    <script src="./lib/jquery.js"></script>
-    <script src="./lib/jquery-ui.min.js"></script>
-    <script src="./lib/p5.min.js"></script>
-    <script src="./lib/p5.dom.min.js"></script>
+    <script src="./js/lib/jquery.js"></script>
+    <script src="./js/lib/jquery-ui.min.js"></script>
+    <script src="./js/lib/p5.min.js"></script>
+    <script src="./js/lib/p5.dom.min.js"></script>
 
     <!-- Own classes -->
     <script src="./js/Config.js"></script>
@@ -52,7 +52,7 @@
                               </div>
                     </div>
                     <div class="divSettingsContentEntry">
-                          <label id="lblVelocitySliderValue" class="lbl lblElementInformation wFull">(x1)</label>
+                          <label id="lblVelocitySliderValue" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">(x1)</label>
                     </div>
                 <div class="divSettingsContentEntry">
                     <div class="divSettingsContentEntryLeft">
@@ -108,19 +108,19 @@
                       <div class="divSettingsContentEntryElement" id="nrOfUavsSlider"></div>
                     </div>
                     <div class="divSettingsContentEntryFloatLeft wFourth">
-                        <label id="lblSliderMaxNrUavs" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                        <label id="lblSliderMaxNrUavs" class=" lbl lblElementInformation" style="padding-left: 25%;">?</label>
                     </div>
                 </div>
                 <div class="divSettingsContentEntry">
-                      <label id="lblCurrentSliderNrOfUavs" class="lbl lblElementInformation wFull">1</label>
+                      <label id="lblCurrentSliderNrOfUavs" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">1</label>
                 </div>
                 <div class="divSettingsContentEntry">
                   <fieldset>
                     <legend>UAV positioning<label class="lblStar">*</label></legend>
-                    <label for="radio-fixed">Fixed Plane</label>
+                    <label for="radio-fixed" style="width: 80%;">Fixed Plane</label>
                     <input type="radio" name="radio" id="radio-fixed" checked>
 
-                    <label for="radio-3d">3D-Space</label>
+                    <label for="radio-3d" style="width: 80%;">3D-Space</label>
                     <input type="radio" name="radio" id="radio-3d">
                   </fieldset>
                 </div>
@@ -142,7 +142,7 @@
                             </div>
                   </div>
                   <div class="divSettingsContentEntry">
-                        <label id="lblCurrentSliderFlightzoneSize" class="lbl lblElementInformation wFull">?</label>
+                        <label id="lblCurrentSliderFlightzoneSize" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                   </div>
           </div>
           <h3>Cluster Head</h3>
@@ -160,7 +160,7 @@
                               </div>
                     </div>
                     <div class="divSettingsContentEntry">
-                          <label id="lblCurrentNumOfBranchesCH" class="lbl lblElementInformation wFull">?</label>
+                          <label id="lblCurrentNumOfBranchesCH" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                     </div>
                     <div class="divSettingsContentEntry">
                         <label class=" lbl lblSubHeading" >Formation angle</label>
@@ -175,7 +175,7 @@
                             </div>
                   </div>
                   <div class="divSettingsContentEntry">
-                        <label id="lblCurrentFormationAngleCH" class="lbl lblElementInformation wFull">?</label>
+                        <label id="lblCurrentFormationAngleCH" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                   </div>
           </div>
           <h3>dUAV</h3>
@@ -193,7 +193,7 @@
                               </div>
                     </div>
                     <div class="divSettingsContentEntry">
-                          <label id="lblCurrentSliderDUAVSpeed" class="lbl lblElementInformation wFull">?</label>
+                          <label id="lblCurrentSliderDUAVSpeed" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                     </div>
 
                     <div class="divSettingsContentEntry">
@@ -209,7 +209,7 @@
                         </div>
                     </div>
                     <div class="divSettingsContentEntry">
-                          <label id="lblCurrentCollisionThresholdDUAV" class="lbl lblElementInformation wFull">?</label>
+                          <label id="lblCurrentCollisionThresholdDUAV" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                     </div>
 
                       <div class="divSettingsContentEntry">
@@ -225,7 +225,7 @@
                           </div>
                       </div>
                       <div class="divSettingsContentEntry">
-                            <label id="lblCurrentWobblingRadiusDUAV" class="lbl lblElementInformation wFull">?</label>
+                            <label id="lblCurrentWobblingRadiusDUAV" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                       </div>
 
                       <div class="divSettingsContentEntry">
@@ -241,7 +241,7 @@
                           </div>
                       </div>
                       <div class="divSettingsContentEntry">
-                            <label id="lblCurrentComminicationRangeDUAV" class="lbl lblElementInformation wFull">?</label>
+                            <label id="lblCurrentCommunicationRangeDUAV" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                       </div>
           </div>
           <h3>mUAV</h3>
@@ -259,7 +259,7 @@
                                 </div>
                       </div>
                       <div class="divSettingsContentEntry">
-                            <label id="lblCurrentSliderMUAVSpeed" class="lbl lblElementInformation wFull">?</label>
+                            <label id="lblCurrentSliderMUAVSpeed" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                       </div>
 
                       <div class="divSettingsContentEntry">
@@ -275,7 +275,7 @@
                           </div>
                       </div>
                       <div class="divSettingsContentEntry">
-                            <label id="lblCurrentCollisionThresholdMUAV" class="lbl lblElementInformation wFull">?</label>
+                            <label id="lblCurrentCollisionThresholdMUAV" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                       </div>
 
                         <div class="divSettingsContentEntry">
@@ -291,7 +291,7 @@
                             </div>
                         </div>
                         <div class="divSettingsContentEntry">
-                              <label id="lblCurrentWobblingRadiusMUAV" class="lbl lblElementInformation wFull">?</label>
+                              <label id="lblCurrentWobblingRadiusMUAV" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">?</label>
                         </div>
 
           </div>
