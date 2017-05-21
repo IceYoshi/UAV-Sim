@@ -44,7 +44,7 @@ let Config = {
     "numOfBranches": 3,
     "maxNumOfBranches": 10,
     "minFormationAngle": Math.round(Math.PI * 0.25 * 100) / 100,
-    "formationAngle": Math.round(Math.PI * 0.75 * 100) / 100,
+    "formationAngle": Math.round(Math.PI * 0.5 * 100) / 100,
     "maxFormationAngle": Math.round(Math.PI * 1 * 100) / 100
   },
 

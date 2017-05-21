@@ -34,19 +34,20 @@ class Controls {
   }
 
   muavIsOutsideFlightZone() {
-    print("Test");
     if(shouldLogSimulation) {
       numOfSimulations++;
-      simulationData += `\n${Config.flightZone.size}` +
-                        `,${Config.flightZone.numOfDUAV}` +
+      simulationData += `\n${Config.flightZone.size.width}` +
+                        `,${Config.flightZone.size.height}` +
+                        `,${Config.flightZone.size.depth}` +
+                        `,${Config.simulation.numOfUAVs}` +
                         `,${Config.cluster.communicationRange}` +
                         `,${Config.cluster.numOfBranches}` +
                         `,${Config.duav.radius}` +
-                        `,${Config.duav.maxSpeed}` +
+                        `,${Config.duav.speed}` +
                         `,${Config.duav.collisionThreshold}` +
                         `,${Config.duav.wobblingRadius}` +
                         `,${Config.muav.radius}` +
-                        `,${Config.muav.maxSpeed}` +
+                        `,${Config.muav.speed}` +
                         `,${Config.muav.collisionThreshold}` +
                         `,${Config.muav.wobblingRadius}` +
                         `,${updateCount}`;
@@ -59,11 +60,11 @@ class Controls {
 
   changeConfig() {
     if(numOfSimulations >= 3) {
-      Config.flightZone.numOfDUAV += 10;
+      this.setNumOfUAVs(Config.simulation.numOfUAVs + 10);
       numOfSimulations = 0;
     }
 
-    if(Config.flightZone.numOfDUAV >= 30) {
+    if(Config.simulation.numOfUAVs >= 30) {
       this.downloadSimulationData();
     }
   }
@@ -75,26 +76,28 @@ class Controls {
     }
   }
 
-  pauseToggle() {
+  pauseToggle(value) {
     // Pauses object updates. Draw calls are unaffected
-    paused = !paused;
+    paused = value == undefined ? !paused : value;
     $("#chbUpdate").prop("checked", !paused);
   }
 
-  separationToggle() {
-    separation = !separation;
+  separationToggle(value) {
+    separation = value == undefined ? !separation : value;
     $("#chbCollisions").prop("checked", separation);
   }
 
-  chaseToggle() {
-    chasing = !chasing;
+  chaseToggle(value) {
+    chasing = value == undefined ? !chasing : value;
     $("#chbChasing").prop("checked", chasing);
   }
 
   performSimulation() {
     if(!shouldLogSimulation) {
       simulationData = 'sep=,\n' +
-                      'flightZoneSize' +
+                      'flightZoneWidth' +
+                      ',flightZoneHeight' +
+                      ',flightZoneDepth' +
                       ',numOfDUAV' +
                       ',communicationRange' +
                       ',numOfBranches' +
@@ -107,12 +110,11 @@ class Controls {
                       ',muavCollisionThreshold' +
                       ',muavWobblingRadius' +
                       ',timePassed';
-      chasing = true;
-      formation = true;
+      this.chaseToggle(true);
+      this.formationToggle(true);
       shouldLogSimulation = true;
-
+      this.setNumOfUAVs(10);
       velocitySlider.slider("value", Config.simulation.maxUpdate);
-      updateSettingsInfo();
       this.resetCanvas();
     }
   }
@@ -121,13 +123,12 @@ class Controls {
     if(shouldLogSimulation) {
       download('output.csv', simulationData);
       shouldLogSimulation = false;
-      paused = true;
-      updateSettingsInfo();
+      this.pauseToggle(true);
     }
   }
 
-  formationToggle() {
-    formation = !formation;
+  formationToggle(value) {
+    formation = value == undefined ? !formation : value;
     $("#chbFormation").prop("checked", formation);
   }
 
@@ -138,25 +139,26 @@ class Controls {
     updateCount = 0;
   }
 
-  wobblingToggle() {
-    wobbling = !wobbling;
+  wobblingToggle(value) {
+    wobbling = value == undefined ? !wobbling : value;
     $("#chbWobbling").prop("checked", wobbling);
   }
 
-  autoRestartToggle() {
-    autoRestart = !autoRestart;
+  autoRestartToggle(value) {
+    autoRestart = value == undefined ? !autoRestart : value;
     $("#chbAutoRestart").prop("checked", autoRestart);
+  }
+
+  setNumOfUAVs(value) {
+    Config.simulation.numOfUAVs = value;
+    $("#nrOfUavsSlider").slider("value", value);
+    $("#lblCurrentSliderNrOfUavs").text(value);
   }
 
 }
 
 function keyPressed(e) {
   controls.keyPressed(e.keyCode);
-  updateSettingsInfo();
-}
-
-function updateSettingsInfo() {
-
 }
 
 function download(filename, text) {
