@@ -1,5 +1,5 @@
 class KHOPCA {
-
+  
   constructor(uav) {
       this._uav = uav
       this.weight = 1;

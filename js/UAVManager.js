@@ -3,10 +3,20 @@ class UAVManager {
   constructor() {
     this._duavs = [];
     this._muavs = [new MUAV()];
-    for(var i = 0; i < Config.flightZone.numOfDUAV; i++) {
-      this._duavs.push(new DUAV(i, createVector(random(-Config.flightZone.size/2, Config.flightZone.size/2),
-                                              random(-Config.flightZone.size/2, Config.flightZone.size/2),
-                                              Config.flightZone.size/2)));
+    let flightZoneSize = Config.flightZone.size;
+    if (Config.simulation.uavPositioningPlane){
+      for(var i = 0; i < Config.simulation.numOfUAVs; i++) {
+        this._duavs.push(new DUAV(i, createVector(random(-flightZoneSize.width/2, flightZoneSize.width/2),
+                                                random(-flightZoneSize.height/2, flightZoneSize.height/2),
+                                                  flightZoneSize.depth/2)));
+      }
+    }
+    else{
+      for(var i = 0; i < Config.simulation.numOfUAVs; i++) {
+        this._duavs.push(new DUAV(i, createVector(random(-flightZoneSize.width/2, flightZoneSize.width/2),
+                                                random(-flightZoneSize.height/2, flightZoneSize.height/2),
+                                              random(-flightZoneSize.depth/2, flightZoneSize.depth/2))));
+      }
     }
     this._uavs = this._duavs.concat(this._muavs);
   }
@@ -24,6 +34,64 @@ class UAVManager {
         uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._uavs[i].communicationRange
       ), this._muavs);
     }
+
+    if(this.muavIsOutsideFlightZone()) {
+      controls.muavIsOutsideFlightZone();
+    }
+  }
+
+  updateDUAVSpeed(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      this._duavs[i].maxSpeed = Config.duav.speed;
+    }
+  }
+  updateDUAVCollisionThreshold(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      this._duavs[i].collisionThreshold = Config.duav.collisionThreshold;
+    }
+  }
+
+  updateDUAVWobblingRadius(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      this._duavs[i].wobblingRadius = Config.duav.wobblingRadius;
+    }
+  }
+
+  updateDUAVCommunicationRange(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      this._duavs[i].communicationRange = Config.cluster.communicationRange;
+    }
+  }
+
+  updateMUAVSpeed(){
+    for(let i = 0; i < this._muavs.length; i++) {
+      this._muavs[i].maxSpeed = Config.muav.speed;
+    }
+  }
+  updateMUAVCollisionThreshold(){
+    for(let i = 0; i < this._muavs.length; i++) {
+      this._muavs[i].collisionThreshold = Config.muav.collisionThreshold;
+    }
+  }
+
+  updateMUAVWobblingRadius(){
+    for(let i = 0; i < this._muavs.length; i++) {
+      this._muavs[i].wobblingRadius = Config.muav.wobblingRadius;
+    }
+  }
+
+  updateCHNumOfBranches(){
+    for(let i = 0; i < this._duavs.length; i++) {
+      let duav = this._duavs[i];
+
+      if(duav.isClusterHead()){
+          duav.didBecomeDUAV();
+      }
+    }
+  }
+
+  updateCHFormationAngle(){
+
   }
 
   drawLinks(){
@@ -34,6 +102,14 @@ class UAVManager {
         current_duav.drawCluster();
     }
     endShape();
+  }
+
+  muavIsOutsideFlightZone() {
+    let muav = this._muavs[0];
+    let border = Config.flightZone.size;
+    return (Math.abs(muav.actualPosition.x) > border.width/2
+      || Math.abs(muav.actualPosition.y) > border.height/2
+      || Math.abs(muav.actualPosition.z) > border.depth/2)
   }
 
 }

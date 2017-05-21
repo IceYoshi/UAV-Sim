@@ -7,7 +7,7 @@ class MUAV extends UAV {
       /*radius:*/ Config.muav.radius,
       /*position:*/ position,
       /*color:*/ Config.muav.color,
-      /*maxSpeed:*/ Config.muav.maxSpeed,
+      /*maxSpeed:*/ Config.muav.speed,
       /*collisionThreshold:*/ Config.muav.collisionThreshold,
       /*wobblingRadius:*/ Config.muav.wobblingRadius,
       /*communicationRange:*/ Config.cluster.communicationRange
@@ -33,5 +33,4 @@ class MUAV extends UAV {
     this.textWeightGraphics.background(this._color);
     texture(this.textWeightGraphics);
   }
-
 }

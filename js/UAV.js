@@ -90,7 +90,7 @@ class UAV {
 
   update(nearbyUAVs, mUAVs) {
     if(wobbling) this.updateWobblingOffset();
-    if(collision) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
+    if(separation) this.performCollisionAvoidance(nearbyUAVs.concat(mUAVs));
 
     this.executeMovement();
   }
@@ -108,6 +108,7 @@ class UAV {
 
   performCollisionAvoidance(nearbyUAVs) {
     if(nearbyUAVs != null) {
+
       let vectorSum = createVector(0, 0, 0);
       for(var i = 0; i < nearbyUAVs.length; i++) {
         let uav = nearbyUAVs[i];
