@@ -19,9 +19,16 @@ function initializeDOM(){
     $("button").button();
     $( "input[type='radio']" ).checkboxradio();
     $("#lblSliderMaxUpdateFrequency").text(Config.simulation.maxUpdate);
-    $("#lblSliderMinFlightzoneSize").text(Config.flightZone.minSize.width);
-    $("#lblSliderMaxFlightzoneSize").text(Config.flightZone.maxSize.width);
-    $("#lblCurrentSliderFlightzoneSize").text(Config.flightZone.minSize.width);
+    $("#lblVelocitySliderValue").text("(x" + Config.simulation.update + ")");
+    $("#lblSliderMinFlightzoneWidth").text(Config.flightZone.minSize.width);
+    $("#lblSliderMaxFlightzoneWidth").text(Config.flightZone.maxSize.width);
+    $("#lblCurrentSliderFlightzoneWidth").text(Config.flightZone.size.width);
+    $("#lblSliderMinFlightzoneHeight").text(Config.flightZone.minSize.height);
+    $("#lblSliderMaxFlightzoneHeight").text(Config.flightZone.maxSize.height);
+    $("#lblCurrentSliderFlightzoneHeight").text(Config.flightZone.size.height);
+    $("#lblSliderMinFlightzoneDepth").text(Config.flightZone.minSize.depth);
+    $("#lblSliderMaxFlightzoneDepth").text(Config.flightZone.maxSize.depth);
+    $("#lblCurrentSliderFlightzoneDepth").text(Config.flightZone.size.depth);
     $("#lblCurrentSliderDUAVSpeed").text(Config.duav.speed);
     $("#lblSliderMinDUAVSpeed").text(Config.duav.minSpeed);
     $("#lblSliderMaxDUAVSpeed").text(Config.duav.maxSpeed);
@@ -137,7 +144,38 @@ function initializeDOM(){
       slide: didSlideFormationAngle
     });
 
+    $("#velocitySlider").slider({
+      min: 1,
+      max: Config.simulation.maxUpdate,
+      step: 1,
+      slide: didSlideVelocitySlider
+    });
+
+    $("#flightZoneWidthSlider").slider({
+      min: Config.flightZone.minSize.width,
+      max: Config.flightZone.maxSize.width,
+      step: 250,
+      slide: didSlideFlightzoneWidth
+    });
+
+    $("#flightZoneHeightSlider").slider({
+      min: Config.flightZone.minSize.height,
+      max: Config.flightZone.maxSize.height,
+      step: 250,
+      slide: didSlideFlightzoneHeight
+    });
+
+    $("#flightZoneDepthSlider").slider({
+      min: Config.flightZone.minSize.depth,
+      max: Config.flightZone.maxSize.depth,
+      step: 250,
+      slide: didSlideFlightzoneDepth
+    });
+
+    velocitySlider = $("#velocitySlider");
+
     $("#numOfBranchesCHSlider").slider("value", Config.cluster.numOfBranches );
+    $("#velocitySlider").slider("value", Config.simulation.update );
     $("#formationAngleCHSlider").slider("value", Config.cluster.formationAngle );
     $("#wobblingRadiusSliderMUAV").slider("value", Config.muav.wobblingRadius );
     $("#collisionThresholdSliderMUAV").slider("value", Config.muav.collisionThreshold );
@@ -147,30 +185,22 @@ function initializeDOM(){
     $("#collisionThresholdSliderDUAV").slider("value", Config.duav.collisionThreshold );
     $("#speedDUAVSlider").slider("value", Config.duav.speed );
     $("#nrOfUavsSlider").slider("value", Config.simulation.numOfUAVs );
+    $("#flightZoneWidthSlider").slider("value", Config.flightZone.size.width );
+    $("#flightZoneHeightSlider").slider("value", Config.flightZone.size.height );
+    $("#flightZoneDepthSlider").slider("value", Config.flightZone.size.depth );
     $("#lblCurrentSliderNrOfUavs").text(Config.simulation.numOfUAVs);
 
-    $("#velocitySlider").slider({
-      min: 1,
-      max: Config.simulation.maxUpdate,
-      step: 1,
-      slide: didSlideVelocitySlider
-    });
+    $("#chbUpdate").prop("checked", Config.simulation.updateEnabled);
+    $("#chbAutoRestart").prop("checked", Config.simulation.restartEnabled);
+    $("#chbWobbling").prop("checked", Config.simulation.wobblingEnabled);
+    $("#chbCollisions").prop("checked", Config.simulation.separationEnabled);
+    $("#chbChasing").prop("checked", Config.simulation.chaseEnabled);
+    $("#chbFormation").prop("checked", Config.simulation.formationEnabled);
 
-    $("#flightZoneSizeSlider").slider({
-      min: Config.flightZone.minSize.width,
-      max: Config.flightZone.maxSize.width,
-      step: 250,
-      slide: didSlideFlightzoneSize
-    });
-
-    velocitySlider = $("#velocitySlider");
   }
 
     function didClickOnReset(){
-        let paused = drawManager.paused;
-        drawManager = new DrawManager();
-        drawManager.paused = paused;
-        initializeObjects();
+      controls.resetCanvas();
     }
 
     function didSlideVelocitySlider(event, ui){
@@ -178,30 +208,38 @@ function initializeDOM(){
     }
 
     function checkboxUpdateDidChange(){
-      drawManager.paused = !drawManager.paused;
+      controls.pauseToggle();
     }
 
     function checkboxWobblingDidChange(){
-      wobbling = !wobbling;
+      controls.wobblingToggle();
     }
 
     function checkboxAvoidCollisionsDidChange(){
-      collision = !collision;
+      controls.separationToggle();
     }
 
     function checkboxChasingDidChange(){
-      chasing = !chasing;
+      controls.chaseToggle();
     }
 
     function checkboxFormationDidChange(){
-      formation = !formation;
+      controls.formationToggle();
     }
 
-    function didSlideFlightzoneSize(event, ui){
-      $("#lblCurrentSliderFlightzoneSize").text(ui.value);
-      flightZoneSize.width = ui.value;
-      flightZoneSize.height = ui.value;
-      flightZoneSize.depth = ui.value;
+    function didSlideFlightzoneWidth(event, ui){
+      $("#lblCurrentSliderFlightzoneWidth").text(ui.value);
+      Config.flightZone.size.width = ui.value;
+    }
+
+    function didSlideFlightzoneHeight(event, ui){
+      $("#lblCurrentSliderFlightzoneHeight").text(ui.value);
+      Config.flightZone.size.height = ui.value;
+    }
+
+    function didSlideFlightzoneDepth(event, ui){
+      $("#lblCurrentSliderFlightzoneDelph").text(ui.value);
+      Config.flightZone.size.depth = ui.value;
     }
 
     function didSlideNrOfUavs(event, ui){

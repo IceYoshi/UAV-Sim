@@ -97,6 +97,7 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
+    let flightZoneSize = Config.flightZone.size;
     let cx = constrain(pos.x, -flightZoneSize.width/2, flightZoneSize.width/2);
     let cy = constrain(pos.y, -flightZoneSize.height/2, flightZoneSize.height/2);
     let cz = constrain(pos.z, -flightZoneSize.depth/2, flightZoneSize.depth/2);

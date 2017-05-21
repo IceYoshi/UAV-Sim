@@ -1,13 +1,16 @@
 
-
-  body {margin:0; font-family: Verdana;}
+  body {
+    margin:0;
+    font-family: Verdana;
+    overflow: hidden;
+  }
   #divWrapper{
     width:100%;
     height: 100%;
     overflow: auto;
   }
   #divCanvas{
-    width:80%;
+    width:100%;
     height: 100%;
     float: left;
     background-color: #e7e7e7;
@@ -19,10 +22,10 @@
     background: #057bff;
   }
   #divSettings{
-    width:20%;
+    width:300px;
     height: 100%;
-    float: right;
-    background-color: #e7e7e7;
+    right:0px;
+    position:absolute;
   }
   #divSettingsContent{
     width:90%;
@@ -30,6 +33,18 @@
     margin-right: auto;
     height: 100%;
     padding-top: 10px;
+    overflow:auto;
+  }
+  .hotkey{
+    text-decoration: underline;
+  }
+  .ui-accordion-header{
+    color: black;
+    background:#f6f6f6;
+  }
+  .ui-state-active{
+    color: white;
+    background:#057bff;
   }
   .divSettingsContentEntry{
     height: auto;

@@ -1,9 +1,16 @@
 let Config = {
-  "simulation":{
-      "maxUpdate" : 10,
-      "maxNumOfUAVs" : 100,
+  "simulation": {
+      "maxUpdate": 20,
+      "update":1,
+      "maxNumOfUAVs": 100,
       "numOfUAVs": 30,
-      "uavPositioningPlane" : true
+      "uavPositioningPlane": true,
+      "updateEnabled": true,
+      "restartEnabled": false,
+      "wobblingEnabled": true,
+      "separationEnabled": true,
+      "chaseEnabled": false,
+      "formationEnabled": false
   },
 
   "flightZone": {
@@ -17,6 +24,11 @@ let Config = {
       "width": 1500,
       "height": 1500,
       "depth": 1500
+    },
+    "size": {
+      "width": 500,
+      "height": 500,
+      "depth": 500
     }
   },
 

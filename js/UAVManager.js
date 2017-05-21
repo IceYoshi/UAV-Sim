@@ -3,6 +3,7 @@ class UAVManager {
   constructor() {
     this._duavs = [];
     this._muavs = [new MUAV()];
+    let flightZoneSize = Config.flightZone.size;
     if (Config.simulation.uavPositioningPlane){
       for(var i = 0; i < Config.simulation.numOfUAVs; i++) {
         this._duavs.push(new DUAV(i, createVector(random(-flightZoneSize.width/2, flightZoneSize.width/2),
@@ -32,6 +33,10 @@ class UAVManager {
       this._uavs[i].update(this._uavs.filter(uav =>
         uav != this._uavs[i] && !(uav instanceof MUAV) && uav.distanceTo(this._uavs[i]) <= this._uavs[i].communicationRange
       ), this._muavs);
+    }
+
+    if(this.muavIsOutsideFlightZone()) {
+      controls.muavIsOutsideFlightZone();
     }
   }
 
@@ -80,15 +85,7 @@ class UAVManager {
       let duav = this._duavs[i];
 
       if(duav.isClusterHead()){
-      //  if(Config.cluster.numOfBranches > duav.clusterHead.numOfBranches){
           duav.didBecomeDUAV();
-        /*}
-        else if(Config.cluster.numOfBranches < duav.clusterHead.numOfBranches){
-          let branches = duav.clusterHead.getOccupiedBranches();
-          for(let i = 0; i < (duav.clusterHead.numOfBranches-Config.cluster.numOfBranches); i++) {
-              duav.clusterHead.removeBranch(branches[i].head);
-          }
-        }*/
       }
     }
   }
@@ -105,6 +102,14 @@ class UAVManager {
         current_duav.drawCluster();
     }
     endShape();
+  }
+
+  muavIsOutsideFlightZone() {
+    let muav = this._muavs[0];
+    let border = Config.flightZone.size;
+    return (Math.abs(muav.actualPosition.x) > border.width/2
+      || Math.abs(muav.actualPosition.y) > border.height/2
+      || Math.abs(muav.actualPosition.z) > border.depth/2)
   }
 
 }
