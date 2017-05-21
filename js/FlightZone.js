@@ -1,9 +1,9 @@
 class FlightZone {
 
   constructor(width, height, depth) {
-    this.width = width || Config.flightZone.size;
-    this.height = height || this.width;
-    this.depth = depth || this.width;
+    this.width = width || Config.flightZone.size.width;
+    this.height = height || Config.flightZone.size.height;
+    this.depth = depth || Config.flightZone.size.depth;
   }
 
   draw() {

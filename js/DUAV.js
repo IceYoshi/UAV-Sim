@@ -8,7 +8,7 @@ class DUAV extends UAV {
       /*radius:*/ Config.duav.radius,
       /*position:*/ position,
       /*color:*/ Config.duav.color,
-      /*maxSpeed:*/ Config.duav.maxSpeed,
+      /*maxSpeed:*/ Config.duav.speed,
       /*collisionThreshold:*/ Config.duav.collisionThreshold,
       /*wobblingRadius:*/ Config.duav.wobblingRadius,
       /*communicationRange:*/ Config.cluster.communicationRange
@@ -42,7 +42,9 @@ class DUAV extends UAV {
   }
 
   update(nearbyUAVs, mUAVs) {
-    this.boundWithinFlightzone();
+    if(this.isClusterHead()) {
+      this.boundWithinFlightzone();
+    }
 
     this.khopca.run(nearbyUAVs);
     this.doOwnClustering(nearbyUAVs);
@@ -61,6 +63,25 @@ class DUAV extends UAV {
     }
   }
 
+  positionateAccordingFormation(angle, mUAVDir, rotDir, clusterRadius, targetPos){
+    var fracAngle = angle * this.ownWeight;
+    var xMag = clusterRadius * cos(fracAngle);
+    var zMag = clusterRadius * sin(fracAngle);
+    var xComp = rotDir.normalize().mult(xMag);
+    var zComp = mUAVDir.normalize().mult(zMag);
+
+    targetPos = targetPos.add(xComp).add(zComp);
+
+    var curPos = this.actualPosition;
+    var dir = targetPos.sub(curPos).normalize();
+    //this.maxSpeed = 1.0;
+    this.applyForce(dir, 0.7);
+
+    if(this.child){
+      this.child.positionateAccordingFormation(angle, mUAVDir, rotDir, clusterRadius, this.actualPosition);
+    }
+  }
+
   drawOwnWeight(){
     this.textWeightGraphics.background(this._color);
     this.textWeightGraphics.stroke(this.weightStrokeColor);
@@ -76,9 +97,10 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
-    let cx = constrain(pos.x, -Config.flightZone.size, Config.flightZone.size);
-    let cy = constrain(pos.y, -Config.flightZone.size, Config.flightZone.size);
-    let cz = constrain(pos.z, -Config.flightZone.size, Config.flightZone.size);
+    let flightZoneSize = Config.flightZone.size;
+    let cx = constrain(pos.x, -flightZoneSize.width/2, flightZoneSize.width/2);
+    let cy = constrain(pos.y, -flightZoneSize.height/2, flightZoneSize.height/2);
+    let cz = constrain(pos.z, -flightZoneSize.depth/2, flightZoneSize.depth/2);
     this.anchorPosition.add(cx - pos.x, cy - pos.y, cz - pos.z);
   }
 
@@ -197,6 +219,7 @@ class DUAV extends UAV {
 
   didBecomeDUAV(){
     if(this.isClusterHead()){
+      this.khopca.weight = this.khopca.maxWeight - 1;
       this.clusterHead.willBecomeDUAV();
       this.clusterHead = null;
     }

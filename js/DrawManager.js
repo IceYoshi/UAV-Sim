@@ -14,12 +14,13 @@ class DrawManager {
   }
 
   draw() {
+    let val = velocitySlider.slider("option","value");
     for(let i = 0; i < this.drawBuffer.length; i++) {
       let drawObject = this.drawBuffer[i];
 
       // Update object if needed
       if(!paused && typeof drawObject.update === 'function') {
-        for(let i = 0; i < (velocitySlider.value() || 1); i++) {
+        for(let i = 0; i < (val || 1); i++) {
           if(this._stop) return;
           updateCount++;
           drawObject.update();
@@ -33,7 +34,8 @@ class DrawManager {
 
   initializeObjects() {
     this.add(new FlightZone());
-    this.add(new UAVManager());
+    setupDelegate = new UAVManager();
+    this.add(setupDelegate);
   }
 
 }

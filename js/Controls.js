@@ -1,12 +1,12 @@
 var controls;
 
 // Global simulation settings
-var paused = false;
-var wobbling = true;
-var separation = true;
-var chasing = false;
-var formation = false;
-var autoRestart = true;
+var paused = !Config.simulation.updateEnabled;
+var wobbling = Config.simulation.wobblingEnabled;
+var separation = Config.simulation.separationEnabled;
+var chasing = Config.simulation.chasingEnabled;
+var formation = Config.simulation.formationEnabled;
+var autoRestart = Config.simulation.restartEnabled;
 var shouldLogSimulation = false;
 
 // DOM objects
@@ -31,26 +31,10 @@ class Controls {
     this._keyBindings['r'] = this.resetCanvas.bind(this);
     this._keyBindings['s'] = this.separationToggle.bind(this);
     this._keyBindings['w'] = this.wobblingToggle.bind(this);
-
-    this.initializeDOM();
-  }
-
-  initializeDOM() {
-    let padding = 10;
-
-    velocitySlider = createSlider(1, 20, 1, 1);
-    velocitySlider.style(`position: absolute; bottom: ${padding}; left: ${padding};`);
-    velocitySlider.attribute('onmouseenter', 'cameraControlEnabled = false;');
-    velocitySlider.attribute('onmouseleave', 'cameraControlEnabled = true;');
-    velocitySlider.attribute('oninput', 'updateSettingsInfo();');
-
-    settingsInfo = createDiv();
-    settingsInfo.style(`position: absolute; bottom: ${padding}; left: ${2 * padding + velocitySlider.width};`);
-
-    updateSettingsInfo();
   }
 
   muavIsOutsideFlightZone() {
+    print("Test");
     if(shouldLogSimulation) {
       numOfSimulations++;
       simulationData += `\n${Config.flightZone.size}` +
@@ -94,14 +78,17 @@ class Controls {
   pauseToggle() {
     // Pauses object updates. Draw calls are unaffected
     paused = !paused;
+    $("#chbUpdate").prop("checked", !paused);
   }
 
   separationToggle() {
     separation = !separation;
+    $("#chbCollisions").prop("checked", separation);
   }
 
   chaseToggle() {
     chasing = !chasing;
+    $("#chbChasing").prop("checked", chasing);
   }
 
   performSimulation() {
@@ -123,7 +110,8 @@ class Controls {
       chasing = true;
       formation = true;
       shouldLogSimulation = true;
-      velocitySlider.value(20);
+
+      velocitySlider.slider("value", Config.simulation.maxUpdate);
       updateSettingsInfo();
       this.resetCanvas();
     }
@@ -140,6 +128,7 @@ class Controls {
 
   formationToggle() {
     formation = !formation;
+    $("#chbFormation").prop("checked", formation);
   }
 
   resetCanvas() {
@@ -151,10 +140,12 @@ class Controls {
 
   wobblingToggle() {
     wobbling = !wobbling;
+    $("#chbWobbling").prop("checked", wobbling);
   }
 
   autoRestartToggle() {
     autoRestart = !autoRestart;
+    $("#chbAutoRestart").prop("checked", autoRestart);
   }
 
 }
@@ -165,7 +156,7 @@ function keyPressed(e) {
 }
 
 function updateSettingsInfo() {
-  settingsInfo.html(`x${velocitySlider.value() || 1} update frequency | Click '<b>R</b>' for reset | Updates (<b>spacebar</b>): ${!paused} | <b>W</b>obbling: ${wobbling} | <b>S</b>eparation: ${separation} | <b>C</b>hasing: ${chasing} | <b>F</b>ormation: ${formation} | <b>A</b>utoRestart: ${autoRestart}`);
+
 }
 
 function download(filename, text) {
