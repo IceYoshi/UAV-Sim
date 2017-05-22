@@ -22,7 +22,7 @@ class DrawManager {
       if(!paused && typeof drawObject.update === 'function') {
         for(let i = 0; i < (val || 1); i++) {
           if(this._stop) return;
-          updateCount++;
+          controls.incrementUpdateCount();
           drawObject.update();
         }
       }

@@ -1,5 +1,8 @@
 var setupDelegate;
 
+var velocitySlider;
+var runCountSlider;
+
 function initializeDOM(){
     $("#divSettingsContent").accordion({
       collapsible: true,
@@ -16,10 +19,11 @@ function initializeDOM(){
       }
     });
 
-    $("button").button();
     $( "input[type='radio']" ).checkboxradio();
     $("#lblSliderMaxUpdateFrequency").text(Config.simulation.maxUpdate);
+    $("#lblSliderMaxRunCount").text(Config.simulation.maxRunCount);
     $("#lblVelocitySliderValue").text("(x" + Config.simulation.update + ")");
+    $("#lblRunCountSliderValue").text("(x" + Config.simulation.runCount + ")");
     $("#lblSliderMinFlightzoneWidth").text(Config.flightZone.minSize.width);
     $("#lblSliderMaxFlightzoneWidth").text(Config.flightZone.maxSize.width);
     $("#lblCurrentSliderFlightzoneWidth").text(Config.flightZone.size.width);
@@ -64,8 +68,11 @@ function initializeDOM(){
     $("#lblmaxFormationAngleCH").text(Config.cluster.maxFormationAngle);
     $("#lblCurrentFormationAngleCH").text(Config.cluster.formationAngle);
 
-    $("button").click(didClickOnReset);
+    $("#btnReset").click(didClickOnReset);
+    $("#btnTestParameters").click(didClickOnTestParameters);
+
     $("#chbUpdate").change(checkboxUpdateDidChange);
+    $("#chbAutoRestart").change(checkboxAutoRestartDidChange);
     $("#chbWobbling").change(checkboxWobblingDidChange);
     $("#chbCollisions").change(checkboxAvoidCollisionsDidChange);
     $("#chbChasing").change(checkboxChasingDidChange);
@@ -151,6 +158,13 @@ function initializeDOM(){
       slide: didSlideVelocitySlider
     });
 
+    $("#runCountSlider").slider({
+      min: 1,
+      max: Config.simulation.maxRunCount,
+      step: 1,
+      slide: didSlideRunCountSlider
+    });
+
     $("#flightZoneWidthSlider").slider({
       min: Config.flightZone.minSize.width,
       max: Config.flightZone.maxSize.width,
@@ -173,9 +187,11 @@ function initializeDOM(){
     });
 
     velocitySlider = $("#velocitySlider");
+    runCountSlider = $("#runCountSlider");
 
     $("#numOfBranchesCHSlider").slider("value", Config.cluster.numOfBranches );
     $("#velocitySlider").slider("value", Config.simulation.update );
+    $("#runCountSlider").slider("value", Config.simulation.runCount );
     $("#formationAngleCHSlider").slider("value", Config.cluster.formationAngle );
     $("#wobblingRadiusSliderMUAV").slider("value", Config.muav.wobblingRadius );
     $("#collisionThresholdSliderMUAV").slider("value", Config.muav.collisionThreshold );
@@ -203,12 +219,26 @@ function initializeDOM(){
       controls.resetCanvas();
     }
 
+    function didClickOnTestParameters(){
+      controls.performParameterTest();
+    }
+
     function didSlideVelocitySlider(event, ui){
+      Config.simulation.update = ui.value;
       $("#lblVelocitySliderValue").text("(x"+ui.value+")");
+    }
+
+    function didSlideRunCountSlider(event, ui){
+      Config.simulation.runCount = ui.value;
+      $("#lblRunCountSliderValue").text("(x"+ui.value+")");
     }
 
     function checkboxUpdateDidChange(){
       controls.pauseToggle();
+    }
+
+    function checkboxAutoRestartDidChange(){
+      controls.autoRestartToggle();
     }
 
     function checkboxWobblingDidChange(){
