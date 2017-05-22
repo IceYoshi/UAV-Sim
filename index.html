@@ -23,6 +23,7 @@
     <script src="./js/ClusterHead.js"></script>
     <script src="./js/UAVBranch.js"></script>
     <script src="./js/KHOPCA.js"></script>
+    <script src="./js/ParameterTest.js"></script>
 
     <!-- Include last -->
     <script src="./js/Camera.js"></script>
@@ -36,108 +37,107 @@
             <div id="divSettingsContent">
                 <h3>Simulation</h3>
                 <div>
-                          <div class="divSettingsContentEntry">
-                            <button id="btnReset" class="divSettingsContentEntryElement wFull">Reset</button>
-                            <label class="lbl lblElementInformation lblInfo">* needs a reset.</label>
-                          </div>
-                      <div class="divSettingsContentEntry">
-                        <label class="lbl lblPaddingLeft">Update frequency</label>
-                            <br/>
-                              <div class="divSettingsContentEntryFloatLeft wFourth">
-                                  <label id="lblSliderMinUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
-                              </div>
-                              <div class="divSettingsContentEntryFloatLeft wFifty">
-                                <div class="divSettingsContentEntryElement wSeventy" id="velocitySlider"></div>
-                              </div>
-                              <div class="divSettingsContentEntryFloatLeft wFourth">
-                                  <label id="lblSliderMaxUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 25%;" ></label>
-                              </div>
-                    </div>
-                    <div class="divSettingsContentEntry">
-                          <label id="lblVelocitySliderValue" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">(x1)</label>
-                    </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">&nbsp;&nbsp;</span>Update</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbUpdate" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbUpdate"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">A</span>utoRestart</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbAutoRestart" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbAutoRestart"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">W</span>obbling</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbWobbling" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbWobbling"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">S</span>eparation</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbCollisions" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbCollisions"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">C</span>hasing</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbChasing" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbChasing"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <div class="divSettingsContentEntryLeft">
-                      <label class="lbl lblPaddingLeft"><span class="hotkey">F</span>ormation</label>
-                    </div>
-                    <div class="divSettingsContentEntryRight">
-                      <input id="chbFormation" class="cmn-toggle cmn-toggle-round" type="checkbox">
-                      <label for="chbFormation"></label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                    <label class=" lbl lblSubHeading" >Number of UAV's<label class="lblStar">*</label></label>
-                    <div class="divSettingsContentEntryFloatLeft wFourth">
-                        <label id="lblSliderMinNrUavs" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
-                    </div>
-                    <div class="divSettingsContentEntryFloatLeft wFifty">
-                      <div class="divSettingsContentEntryElement" id="nrOfUavsSlider"></div>
-                    </div>
-                    <div class="divSettingsContentEntryFloatLeft wFourth">
-                        <label id="lblSliderMaxNrUavs" class=" lbl lblElementInformation" style="padding-left: 25%;">?</label>
-                    </div>
-                </div>
-                <div class="divSettingsContentEntry">
-                      <label id="lblCurrentSliderNrOfUavs" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">1</label>
-                </div>
-                <div class="divSettingsContentEntry">
-                  <fieldset>
-                    <legend>UAV positioning<label class="lblStar">*</label></legend>
-                    <label for="radio-fixed" style="width: 80%;">Fixed Plane</label>
-                    <input type="radio" name="radio" id="radio-fixed" checked>
+                  <div class="divSettingsContentEntry">
+                    <button id="btnReset" class="divSettingsContentEntryElement wFull">Reset</button>
+                    <label class="lbl lblElementInformation lblInfo">* needs a reset.</label>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <label class="lbl lblPaddingLeft">Update frequency</label>
+                      <br/>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMinUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFifty">
+                        <div class="divSettingsContentEntryElement wSeventy" id="velocitySlider" style="width: 90%;"></div>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMaxUpdateFrequency" class=" lbl lblElementInformation" style="padding-left: 25%;" ></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                        <label id="lblVelocitySliderValue" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">(x1)</label>
+                  </div>
 
-                    <label for="radio-3d" style="width: 80%;">3D-Space</label>
-                    <input type="radio" name="radio" id="radio-3d">
-                  </fieldset>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">&nbsp;&nbsp;</span>Update</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbUpdate" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbUpdate"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">A</span>utoRestart</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbAutoRestart" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbAutoRestart"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">W</span>obbling</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbWobbling" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbWobbling"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">S</span>eparation</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbCollisions" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbCollisions"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">C</span>hasing</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbChasing" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbChasing"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <div class="divSettingsContentEntryLeft">
+                        <label class="lbl lblPaddingLeft"><span class="hotkey">F</span>ormation</label>
+                      </div>
+                      <div class="divSettingsContentEntryRight">
+                        <input id="chbFormation" class="cmn-toggle cmn-toggle-round" type="checkbox">
+                        <label for="chbFormation"></label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                      <label class=" lbl lblSubHeading" >Number of UAV's<label class="lblStar">*</label></label>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMinNrUavs" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFifty">
+                        <div class="divSettingsContentEntryElement" id="nrOfUavsSlider"></div>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMaxNrUavs" class=" lbl lblElementInformation" style="padding-left: 25%;">?</label>
+                      </div>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                        <label id="lblCurrentSliderNrOfUavs" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">1</label>
+                  </div>
+                  <div class="divSettingsContentEntry">
+                    <fieldset>
+                      <legend>UAV positioning<label class="lblStar">*</label></legend>
+                      <label for="radio-fixed" style="width: 80%;">Fixed Plane</label>
+                      <input type="radio" name="radio" id="radio-fixed" checked>
+
+                      <label for="radio-3d" style="width: 80%;">3D-Space</label>
+                      <input type="radio" name="radio" id="radio-3d">
+                    </fieldset>
+                  </div>
                 </div>
-          <div>
-            </div>
-        </div>
           <h3>Flightzone</h3>
           <div>
                     <div class="divSettingsContentEntry">
@@ -334,6 +334,31 @@
                         </div>
 
           </div>
+
+          <h3>Test parameters</h3>
+          <div>
+              <div class="divSettingsContentEntry">
+                <button id="btnTestParameters" class="divSettingsContentEntryElement wFull">Start parameter test</button>
+                <label class="lbl lblElementInformation lblInfo">Note: Do not change any settings while the test is running.</label>
+              </div>
+              <div class="divSettingsContentEntry">
+                <label class="lbl lblPaddingLeft">Runs per configuration</label>
+                    <br/>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMinRunCount" class=" lbl lblElementInformation" style="padding-left: 50%;">1</label>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFifty">
+                        <div class="divSettingsContentEntryElement wSeventy" id="runCountSlider" style="width: 90%;"></div>
+                      </div>
+                      <div class="divSettingsContentEntryFloatLeft wFourth">
+                          <label id="lblSliderMaxRunCount" class=" lbl lblElementInformation" style="padding-left: 25%;" >?</label>
+                      </div>
+              </div>
+              <div class="divSettingsContentEntry">
+                    <label id="lblRunCountSliderValue" class="lbl lblElementInformation wFull" style="width: 50%; margin: auto;">(x1)</label>
+              </div>
+          </div>
+
         </div>
       </div>
   </body>

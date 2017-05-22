@@ -10,7 +10,10 @@ let Config = {
       "wobblingEnabled": true,
       "separationEnabled": true,
       "chaseEnabled": false,
-      "formationEnabled": false
+      "formationEnabled": false,
+      "runCount":30,
+      "maxRunCount":50,
+      "failedThreshold":10000
   },
 
   "flightZone": {

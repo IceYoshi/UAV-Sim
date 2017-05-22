@@ -112,4 +112,20 @@ class UAVManager {
       || Math.abs(muav.actualPosition.z) > border.depth/2)
   }
 
+  getNumOfClusters() {
+    let count = 0;
+    for(let i = 0; i < this._duavs.length; i++) {
+      if(this._duavs[i].isClusterHead()) count++;
+    }
+    return count;
+  }
+
+  getNumOfLonelyUAVs() {
+    let count = 0;
+    for(let i = 0; i < this._duavs.length; i++) {
+      if(!this._duavs[i].isClusterHead() && this._duavs[i].ownWeight == 0) count++;
+    }
+    return count;
+  }
+
 }
