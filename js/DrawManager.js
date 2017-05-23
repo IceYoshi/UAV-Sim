@@ -1,15 +1,11 @@
 class DrawManager {
 
-  get paused() {
-    return this._paused;
-  }
-  set paused(value) {
-    this._paused = value;
-  }
-
   constructor() {
     this.drawBuffer = [];
-    this._paused = false;
+  }
+
+  stop() {
+    this._stop = true;
   }
 
   add(drawable) {
@@ -23,8 +19,10 @@ class DrawManager {
       let drawObject = this.drawBuffer[i];
 
       // Update object if needed
-      if(!this._paused && typeof drawObject.update === 'function') {
+      if(!paused && typeof drawObject.update === 'function') {
         for(let i = 0; i < (val || 1); i++) {
+          if(this._stop) return;
+          controls.incrementUpdateCount();
           drawObject.update();
         }
       }
@@ -33,4 +31,11 @@ class DrawManager {
       drawObject.draw();
     }
   }
+
+  initializeObjects() {
+    this.add(new FlightZone());
+    setupDelegate = new UAVManager();
+    this.add(setupDelegate);
+  }
+
 }

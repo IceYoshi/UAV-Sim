@@ -16,9 +16,7 @@ function updateCamera() {
 // called when mousePressed is fired INSIDE canvas
 var canvasMousePressed = function(){
   canvasFocus = true;
-  if(cameraControlEnabled) {
-    clickPoint.set(mouseX, mouseY);
-  }
+  clickPoint.set(mouseX, mouseY);
 }
 
 var canvasMouseOver = function(){
@@ -30,7 +28,7 @@ var canvasMouseOut = function(){
 }
 
 function mouseDragged(){
-  if(canvasFocus && cameraControlEnabled) {
+  if(canvasFocus) {
     let dx = clickPoint.x - mouseX;
     let dy = clickPoint.y - mouseY;
     if(mouseButton == LEFT) {

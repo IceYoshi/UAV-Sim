@@ -72,6 +72,15 @@ class DUAV extends UAV {
 
     targetPos = targetPos.add(xComp).add(zComp);
 
+    xComp = rotDir.normalize().mult(xMag);
+    zComp = mUAVDir.normalize().mult(zMag);
+
+    if(fracAngle <= PI * 0.5){
+      targetPos = targetPos.add(xComp).add(zComp);
+    } else {
+      targetPos = targetPos.sub(xComp).add(zComp);
+    }
+
     var curPos = this.actualPosition;
     var dir = targetPos.sub(curPos).normalize();
     //this.maxSpeed = 1.0;
@@ -97,6 +106,7 @@ class DUAV extends UAV {
 
   boundWithinFlightzone(){
     let pos = this.anchorPosition;
+    let flightZoneSize = Config.flightZone.size;
     let cx = constrain(pos.x, -flightZoneSize.width/2, flightZoneSize.width/2);
     let cy = constrain(pos.y, -flightZoneSize.height/2, flightZoneSize.height/2);
     let cz = constrain(pos.z, -flightZoneSize.depth/2, flightZoneSize.depth/2);
