@@ -48,6 +48,7 @@ class ParameterTest {
   moveToNextParameter() {
     this.initializeParameters();
     this._parameterPicker++;
+    this.downloadProgress();
   }
 
   logRun(updateCount) {
@@ -81,56 +82,62 @@ class ParameterTest {
           controls.setNumOfUAVs(Config.simulation.numOfUAVs + 10);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setCommunicationRange(0);
         }
       }
 
       if(this._parameterPicker == 1) {
-        controls.setNumOfUAVs(20);
         if(Config.cluster.communicationRange < 500) {
           controls.setCommunicationRange(Config.cluster.communicationRange + 100);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setDUAVWobblingRadius(0);
         }
       }
 
       if(this._parameterPicker == 2) {
-        controls.setNumOfUAVs(20);
         if(Config.duav.wobblingRadius < 500) {
           controls.setDUAVWobblingRadius(Config.duav.wobblingRadius + 100);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setMUAVWobblingRadius(0);
         }
       }
 
       if(this._parameterPicker == 3) {
-        controls.setNumOfUAVs(20);
         if(Config.muav.wobblingRadius < 500) {
           controls.setMUAVWobblingRadius(Config.muav.wobblingRadius + 100);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setDUAVCollisionThreshold(0);
         }
       }
 
       if(this._parameterPicker == 4) {
-        controls.setNumOfUAVs(20);
         if(Config.duav.collisionThreshold < 100) {
           controls.setDUAVCollisionThreshold(Config.duav.collisionThreshold + 20);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setMUAVCollisionThreshold(0);
         }
       }
 
       if(this._parameterPicker == 5) {
-        controls.setNumOfUAVs(20);
         if(Config.muav.collisionThreshold < 100) {
           controls.setMUAVCollisionThreshold(Config.muav.collisionThreshold + 20);
         } else {
           this.moveToNextParameter();
+          controls.setNumOfUAVs(20);
+          controls.setNumOfBranches(0);
         }
       }
 
       if(this._parameterPicker == 6) {
-        controls.setNumOfUAVs(50);
         if(Config.cluster.numOfBranches < 10) {
           controls.setNumOfBranches(Config.cluster.numOfBranches + 1);
         } else {
@@ -139,7 +146,7 @@ class ParameterTest {
       }
 
       if(this._parameterPicker > 6) {
-        download('output.csv', this._runLog);
+        this.downloadProgress();
         controls.pauseToggle(true);
         return false;
       }
@@ -148,6 +155,10 @@ class ParameterTest {
 
     return true;
 
+  }
+
+  downloadProgress() {
+    download('output.csv', this._runLog);
   }
 
 }

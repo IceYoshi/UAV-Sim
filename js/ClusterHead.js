@@ -224,7 +224,7 @@ class ClusterHead{
   }
 
   getEnclosementAngle(mUAV, clusterRadius) {
-    if(this.uav.distanceTo(mUAV) < clusterRadius * (this.getMaxBranchLength() + 1) / 2) {
+    if(formationEnclosement && this.uav.distanceTo(mUAV) < clusterRadius * (this.getMaxBranchLength() + 1) * 0.7) {
       return Config.cluster.maxFormationAngle;
     }
     return Config.cluster.formationAngle

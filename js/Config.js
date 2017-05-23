@@ -1,7 +1,7 @@
 let Config = {
   "simulation": {
       "maxUpdate": 20,
-      "update":1,
+      "update": 1,
       "maxNumOfUAVs": 100,
       "numOfUAVs": 30,
       "uavPositioningPlane": true,
@@ -11,9 +11,10 @@ let Config = {
       "separationEnabled": true,
       "chaseEnabled": false,
       "formationEnabled": false,
-      "runCount":30,
-      "maxRunCount":50,
-      "failedThreshold":10000
+      "runCount": 30,
+      "maxRunCount": 100,
+      "failedThreshold": 10000,
+      "formationEnclosement": true
   },
 
   "flightZone": {
