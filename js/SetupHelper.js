@@ -19,6 +19,7 @@ function initializeDOM(){
       }
     });
 
+    $( "button" ).button();
     $( "input[type='radio']" ).checkboxradio();
     $("#lblSliderMaxUpdateFrequency").text(Config.simulation.maxUpdate);
     $("#lblSliderMaxRunCount").text(Config.simulation.maxRunCount);
@@ -77,6 +78,7 @@ function initializeDOM(){
     $("#chbCollisions").change(checkboxAvoidCollisionsDidChange);
     $("#chbChasing").change(checkboxChasingDidChange);
     $("#chbFormation").change(checkboxFormationDidChange);
+    $("#chbFormationEnclosement").change(checkboxFormationEnclosementDidChange);
     $("#radio-fixed").change(checkboxRadioFixedPlaneDidChange);
     $("#radio-3d").change(checkboxRadio3DDidChange);
 
@@ -212,6 +214,7 @@ function initializeDOM(){
     $("#chbCollisions").prop("checked", Config.simulation.separationEnabled);
     $("#chbChasing").prop("checked", Config.simulation.chaseEnabled);
     $("#chbFormation").prop("checked", Config.simulation.formationEnabled);
+    $("#chbFormationEnclosement").prop("checked", Config.simulation.formationEnclosement);
 
   }
 
@@ -255,6 +258,10 @@ function initializeDOM(){
 
     function checkboxFormationDidChange(){
       controls.formationToggle();
+    }
+
+    function checkboxFormationEnclosementDidChange(){
+      controls.formationEnclosementToggle();
     }
 
     function didSlideFlightzoneWidth(event, ui){

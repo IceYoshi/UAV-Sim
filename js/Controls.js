@@ -7,12 +7,7 @@ var separation = Config.simulation.separationEnabled;
 var chasing = Config.simulation.chasingEnabled;
 var formation = Config.simulation.formationEnabled;
 var autoRestart = Config.simulation.restartEnabled;
-//var shouldLogSimulation = false;
-
-// DOM objects
-//var velocitySlider;
-//var settingsInfo;
-//var cameraControlEnabled = true; // Blocks camera rotating while on top of a slider
+var formationEnclosement = Config.simulation.formationEnclosement;
 var updateCount = 0;
 
 class Controls {
@@ -72,6 +67,11 @@ class Controls {
   formationToggle(value) {
     formation = value == undefined ? !formation : value;
     $("#chbFormation").prop("checked", formation);
+  }
+
+  formationEnclosementToggle(value) {
+    formationEnclosement = value == undefined ? !formationEnclosement : value;
+    $("#chbFormationEnclosement").prop("checked", formationEnclosement);
   }
 
   resetCanvas() {
@@ -142,7 +142,7 @@ class Controls {
   incrementUpdateCount() {
     updateCount++;
     if(updateCount >= Config.simulation.failedThreshold && this._parameterTest != undefined) {
-      updateCount = -1;
+      //updateCount = -1;
       this.muavIsOutsideFlightZone();
     }
   }
