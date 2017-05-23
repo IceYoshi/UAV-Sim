@@ -1,7 +1,11 @@
 let Config = {
   "simulation": {
       "maxUpdate": 20,
+<<<<<<< HEAD
       "update": 1,
+=======
+      "update":1,
+>>>>>>> origin/dren-dev
       "maxNumOfUAVs": 100,
       "numOfUAVs": 30,
       "uavPositioningPlane": true,
@@ -10,11 +14,15 @@ let Config = {
       "wobblingEnabled": true,
       "separationEnabled": true,
       "chaseEnabled": false,
+<<<<<<< HEAD
       "formationEnabled": false,
       "runCount": 30,
       "maxRunCount": 100,
       "failedThreshold": 10000,
       "formationEnclosement": true
+=======
+      "formationEnabled": false
+>>>>>>> origin/dren-dev
   },
 
   "flightZone": {

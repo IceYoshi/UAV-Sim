@@ -112,6 +112,7 @@ class UAVManager {
       || Math.abs(muav.actualPosition.z) > border.depth/2)
   }
 
+<<<<<<< HEAD
   getNumOfClusters() {
     let count = 0;
     for(let i = 0; i < this._duavs.length; i++) {
@@ -128,4 +129,6 @@ class UAVManager {
     return count;
   }
 
+=======
+>>>>>>> origin/dren-dev
 }

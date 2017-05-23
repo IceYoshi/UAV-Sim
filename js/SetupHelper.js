@@ -22,9 +22,13 @@ function initializeDOM(){
     $( "button" ).button();
     $( "input[type='radio']" ).checkboxradio();
     $("#lblSliderMaxUpdateFrequency").text(Config.simulation.maxUpdate);
+<<<<<<< HEAD
     $("#lblSliderMaxRunCount").text(Config.simulation.maxRunCount);
     $("#lblVelocitySliderValue").text("(x" + Config.simulation.update + ")");
     $("#lblRunCountSliderValue").text("(x" + Config.simulation.runCount + ")");
+=======
+    $("#lblVelocitySliderValue").text("(x" + Config.simulation.update + ")");
+>>>>>>> origin/dren-dev
     $("#lblSliderMinFlightzoneWidth").text(Config.flightZone.minSize.width);
     $("#lblSliderMaxFlightzoneWidth").text(Config.flightZone.maxSize.width);
     $("#lblCurrentSliderFlightzoneWidth").text(Config.flightZone.size.width);
@@ -160,6 +164,7 @@ function initializeDOM(){
       slide: didSlideVelocitySlider
     });
 
+<<<<<<< HEAD
     $("#runCountSlider").slider({
       min: 1,
       max: Config.simulation.maxRunCount,
@@ -167,6 +172,8 @@ function initializeDOM(){
       slide: didSlideRunCountSlider
     });
 
+=======
+>>>>>>> origin/dren-dev
     $("#flightZoneWidthSlider").slider({
       min: Config.flightZone.minSize.width,
       max: Config.flightZone.maxSize.width,
@@ -189,11 +196,17 @@ function initializeDOM(){
     });
 
     velocitySlider = $("#velocitySlider");
+<<<<<<< HEAD
     runCountSlider = $("#runCountSlider");
 
     $("#numOfBranchesCHSlider").slider("value", Config.cluster.numOfBranches );
     $("#velocitySlider").slider("value", Config.simulation.update );
     $("#runCountSlider").slider("value", Config.simulation.runCount );
+=======
+
+    $("#numOfBranchesCHSlider").slider("value", Config.cluster.numOfBranches );
+    $("#velocitySlider").slider("value", Config.simulation.update );
+>>>>>>> origin/dren-dev
     $("#formationAngleCHSlider").slider("value", Config.cluster.formationAngle );
     $("#wobblingRadiusSliderMUAV").slider("value", Config.muav.wobblingRadius );
     $("#collisionThresholdSliderMUAV").slider("value", Config.muav.collisionThreshold );
@@ -214,16 +227,22 @@ function initializeDOM(){
     $("#chbCollisions").prop("checked", Config.simulation.separationEnabled);
     $("#chbChasing").prop("checked", Config.simulation.chaseEnabled);
     $("#chbFormation").prop("checked", Config.simulation.formationEnabled);
+<<<<<<< HEAD
     $("#chbFormationEnclosement").prop("checked", Config.simulation.formationEnclosement);
+=======
+>>>>>>> origin/dren-dev
 
   }
 
     function didClickOnReset(){
       controls.resetCanvas();
+<<<<<<< HEAD
     }
 
     function didClickOnTestParameters(){
       controls.performParameterTest();
+=======
+>>>>>>> origin/dren-dev
     }
 
     function didSlideVelocitySlider(event, ui){
@@ -238,10 +257,13 @@ function initializeDOM(){
 
     function checkboxUpdateDidChange(){
       controls.pauseToggle();
+<<<<<<< HEAD
     }
 
     function checkboxAutoRestartDidChange(){
       controls.autoRestartToggle();
+=======
+>>>>>>> origin/dren-dev
     }
 
     function checkboxWobblingDidChange(){
@@ -260,10 +282,13 @@ function initializeDOM(){
       controls.formationToggle();
     }
 
+<<<<<<< HEAD
     function checkboxFormationEnclosementDidChange(){
       controls.formationEnclosementToggle();
     }
 
+=======
+>>>>>>> origin/dren-dev
     function didSlideFlightzoneWidth(event, ui){
       $("#lblCurrentSliderFlightzoneWidth").text(ui.value);
       Config.flightZone.size.width = ui.value;
