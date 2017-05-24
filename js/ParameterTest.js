@@ -80,6 +80,7 @@ class ParameterTest {
       if(this._parameterPicker == 0) {
         if(Config.simulation.numOfUAVs < 100) {
           controls.setNumOfUAVs(Config.simulation.numOfUAVs + 10);
+          print(Config.simulation.numOfUAVs + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -91,6 +92,7 @@ class ParameterTest {
       if(this._parameterPicker == 1) {
         if(Config.cluster.communicationRange < 500) {
           controls.setCommunicationRange(Config.cluster.communicationRange + 100);
+          print(Config.cluster.communicationRange + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -102,6 +104,7 @@ class ParameterTest {
       if(this._parameterPicker == 2) {
         if(Config.duav.wobblingRadius < 500) {
           controls.setDUAVWobblingRadius(Config.duav.wobblingRadius + 100);
+          print(Config.duav.wobblingRadius + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -113,6 +116,7 @@ class ParameterTest {
       if(this._parameterPicker == 3) {
         if(Config.muav.wobblingRadius < 500) {
           controls.setMUAVWobblingRadius(Config.muav.wobblingRadius + 100);
+          print(Config.muav.wobblingRadius + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -124,6 +128,7 @@ class ParameterTest {
       if(this._parameterPicker == 4) {
         if(Config.duav.collisionThreshold < 100) {
           controls.setDUAVCollisionThreshold(Config.duav.collisionThreshold + 20);
+          print(Config.duav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -135,6 +140,7 @@ class ParameterTest {
       if(this._parameterPicker == 5) {
         if(Config.muav.collisionThreshold < 100) {
           controls.setMUAVCollisionThreshold(Config.muav.collisionThreshold + 20);
+          print(Config.muav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
@@ -146,6 +152,7 @@ class ParameterTest {
       if(this._parameterPicker == 6) {
         if(Config.cluster.numOfBranches < 10) {
           controls.setNumOfBranches(Config.cluster.numOfBranches + 1);
+          print(Config.cluster.numOfBranches + "/" + 10);
         } else {
           this.moveToNextParameter();
           this._parameterPicker = 7;
