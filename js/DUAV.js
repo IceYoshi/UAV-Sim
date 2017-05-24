@@ -17,10 +17,10 @@ class DUAV extends UAV {
     this.khopca = new KHOPCA(this)
     this.parent = null;
     this.child = null;
-    this.textWeightGraphics = createGraphics(
+    /*this.textWeightGraphics = createGraphics(
       9 * Config.duav.radius,
       3 * Config.duav.radius
-    );
+    );*/
 
     this.weightStrokeColor = "black";
 
@@ -36,7 +36,7 @@ class DUAV extends UAV {
     push();
     translate(pos.x, pos.y, pos.z);
     fill(this._color);
-    this.drawOwnWeight();
+    /*this.drawOwnWeight();*/
     sphere(this._radius);
     pop();
   }

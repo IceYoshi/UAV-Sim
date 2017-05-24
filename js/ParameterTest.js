@@ -84,6 +84,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setCommunicationRange(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -94,6 +95,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setDUAVWobblingRadius(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -104,6 +106,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setMUAVWobblingRadius(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -114,6 +117,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setDUAVCollisionThreshold(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -124,6 +128,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setMUAVCollisionThreshold(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -134,6 +139,7 @@ class ParameterTest {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setNumOfBranches(0);
+          this._parameterPicker = 7;
         }
       }
 
@@ -142,11 +148,12 @@ class ParameterTest {
           controls.setNumOfBranches(Config.cluster.numOfBranches + 1);
         } else {
           this.moveToNextParameter();
+          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker > 6) {
-        this.downloadProgress();
+        //this.downloadProgress();
         controls.pauseToggle(true);
         return false;
       }
