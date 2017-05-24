@@ -3,6 +3,7 @@ class ParameterTest {
   constructor(numOfRuns) {
     this._numOfRuns = numOfRuns || 1;
     this._parameterPicker = 0;
+    this._jumpTo = 5;
     this._currentRunCount = 1;
     this._runLog = 'sep=,\n' +
                     'flightZoneWidth' +
@@ -48,7 +49,6 @@ class ParameterTest {
   moveToNextParameter() {
     this.initializeParameters();
     this._parameterPicker++;
-    this.downloadProgress();
   }
 
   logRun(updateCount) {
@@ -73,94 +73,88 @@ class ParameterTest {
 
   nextRun(updateCount) {
     this.logRun(updateCount);
+
     controls.resetCanvas();
     this._currentRunCount++;
     if(this._currentRunCount > Config.simulation.runCount) {
       this._currentRunCount = 1;
       if(this._parameterPicker == 0) {
-        if(Config.simulation.numOfUAVs < 100) {
+        if(Config.simulation.numOfUAVs < 100 && this._jumpTo == 0) {
           controls.setNumOfUAVs(Config.simulation.numOfUAVs + 10);
           print(Config.simulation.numOfUAVs + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setCommunicationRange(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 1) {
-        if(Config.cluster.communicationRange < 500) {
+        if(Config.cluster.communicationRange < 500 && this._jumpTo == 1) {
           controls.setCommunicationRange(Config.cluster.communicationRange + 100);
           print(Config.cluster.communicationRange + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setDUAVWobblingRadius(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 2) {
-        if(Config.duav.wobblingRadius < 500) {
+        if(Config.duav.wobblingRadius < 500 && this._jumpTo == 2) {
           controls.setDUAVWobblingRadius(Config.duav.wobblingRadius + 100);
           print(Config.duav.wobblingRadius + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setMUAVWobblingRadius(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 3) {
-        if(Config.muav.wobblingRadius < 500) {
+        if(Config.muav.wobblingRadius < 500 && this._jumpTo == 3) {
           controls.setMUAVWobblingRadius(Config.muav.wobblingRadius + 100);
           print(Config.muav.wobblingRadius + "/" + 500);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setDUAVCollisionThreshold(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 4) {
-        if(Config.duav.collisionThreshold < 100) {
+        if(Config.duav.collisionThreshold < 100 && this._jumpTo == 4) {
           controls.setDUAVCollisionThreshold(Config.duav.collisionThreshold + 20);
           print(Config.duav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setMUAVCollisionThreshold(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 5) {
-        if(Config.muav.collisionThreshold < 100) {
+        if(Config.muav.collisionThreshold < 100 && this._jumpTo == 5) {
           controls.setMUAVCollisionThreshold(Config.muav.collisionThreshold + 20);
           print(Config.muav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
           controls.setNumOfUAVs(20);
           controls.setNumOfBranches(0);
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker == 6) {
-        if(Config.cluster.numOfBranches < 10) {
+        if(Config.cluster.numOfBranches < 10 && this._jumpTo == 6) {
           controls.setNumOfBranches(Config.cluster.numOfBranches + 1);
           print(Config.cluster.numOfBranches + "/" + 10);
         } else {
           this.moveToNextParameter();
-          this._parameterPicker = 7;
         }
       }
 
       if(this._parameterPicker > 6) {
-        //this.downloadProgress();
+        this.downloadProgress();
         controls.pauseToggle(true);
         return false;
       }
