@@ -13,7 +13,7 @@ let Config = {
       "formationEnabled": false,
       "runCount": 30,
       "maxRunCount": 100,
-      "failedThreshold": 10000,
+      "failedThreshold": 6000,
       "formationEnclosement": true
   },
 

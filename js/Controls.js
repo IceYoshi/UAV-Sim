@@ -142,7 +142,7 @@ class Controls {
   incrementUpdateCount() {
     updateCount++;
     if(updateCount >= Config.simulation.failedThreshold && this._parameterTest != undefined) {
-      //updateCount = -1;
+      updateCount = 10000;
       this.muavIsOutsideFlightZone();
     }
   }

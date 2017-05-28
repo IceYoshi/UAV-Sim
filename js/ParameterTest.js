@@ -3,7 +3,7 @@ class ParameterTest {
   constructor(numOfRuns) {
     this._numOfRuns = numOfRuns || 1;
     this._parameterPicker = 0;
-    this._jumpTo = 5;
+    this._jumpTo = 4;
     this._currentRunCount = 1;
     this._runLog = 'sep=,\n' +
                     'flightZoneWidth' +
@@ -124,7 +124,7 @@ class ParameterTest {
 
       if(this._parameterPicker == 4) {
         if(Config.duav.collisionThreshold < 100 && this._jumpTo == 4) {
-          controls.setDUAVCollisionThreshold(Config.duav.collisionThreshold + 20);
+          controls.setDUAVCollisionThreshold(Config.duav.collisionThreshold + 10);
           print(Config.duav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
@@ -135,7 +135,7 @@ class ParameterTest {
 
       if(this._parameterPicker == 5) {
         if(Config.muav.collisionThreshold < 100 && this._jumpTo == 5) {
-          controls.setMUAVCollisionThreshold(Config.muav.collisionThreshold + 20);
+          controls.setMUAVCollisionThreshold(Config.muav.collisionThreshold + 10);
           print(Config.muav.collisionThreshold + "/" + 100);
         } else {
           this.moveToNextParameter();
